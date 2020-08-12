@@ -7,6 +7,7 @@
         android:title="@string/home"
         android:icon="@drawable/home"
         android:enabled="true"
+
         />
     <item
         android:id="@+id/menucomida"
