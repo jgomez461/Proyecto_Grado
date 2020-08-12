@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="1dp"
+    android:layout_marginRight="10dp"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="3dp"
+        android:background="#00000000"
+        app:cardCornerRadius="4dp"
+        app:cardMaxElevation="2dp">
+
+        <TextView
+            android:id="@+id/textofiltros"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:paddingRight="10dp"
+            android:drawableLeft="@drawable/princ_quitarfiltro"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:text="@string/quitarfiltros"
+            android:textColor="#5C5858"
+            android:textSize="12dp"
+            tools:ignore="RtlCompat" />
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

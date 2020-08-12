@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Proyecto Grado</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="inicio">Inicio</string>
+    <string name="comida">Comida</string>
+    <string name="deportivo">Deportivo</string>
+    <string name="caminatas">Caminatas</string>
+    <string name="ciclorutas">Ciclorutas</string>
+    <string name="home">Filtros</string>
+    <string name="tab1">saludable</string>
+    <string name="tab2">no saludable</string>
+    <string name="tab3">intermedia</string>
+    <string name="titulo_botonsheetcomida">Descripción del contenido</string>
+    <string name="descripcion_comidasaludable">"En esta sección puedes agregar lugares que consideres que están en el rango de comida saludable</string>
+    <string name="agregar_lugar">"Agregar Lugar"</string>
+    <string name="cambiodevista_normal">"Vista de mapa normal"</string>
+    <string name="cambiodevista_hibrido">"Vista de mapa por satelite"</string>
+    <string name="nombre_lugar">"Nombre del lugar"</string>
+    <string name="descripcion_lugar">"Descripción del lugar"</string>
+    <string name="agregar_imagen">"Agregar imagen del lugar"</string>
+    <string name="continuar">"Continuar  "</string>
+    <string name="titulo_botonsheetprincipal">Filtro de lugares</string>
+    <string name="hint_buscardireccion">Buscar dirección</string>
+    <string name="informacion_imges_comida_01">Puedes agregar lugares donde vendan alimentos saludables.</string>
+    <string name="informacion_imges_comida_02">Agrega lugares que se destaquen por brindar comida saludable para veganos, vegetarianos y carnívoros.</string>
+    <string name="informacion_imges_comida_03">Si consideras que un lugar entra en el rango de comida saludable, puedes agregarlo en esta sección.</string>
+    <string name="filtocomida">Comidas</string>
+    <string name="filtoejercicio">Ejercicio</string>
+    <string name="filtoejerciciopri"> Ejercicio</string>
+    <string name="filtocaminata">Caminatas</string>
+    <string name="filtociclorutas">Ciclo rutas</string>
+    <string name="filtociclorutaspri"> Ciclo rutas</string>
+    <string name="quitarfiltros"> Quitar filtros</string>
+
+</resources>

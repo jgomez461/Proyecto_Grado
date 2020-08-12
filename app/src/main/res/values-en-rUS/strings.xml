@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Degree project</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="inicio">Start</string>
+    <string name="comida">Food</string>
+    <string name="deportivo">Sports</string>
+    <string name="caminatas">Hikes</string>
+    <string name="ciclorutas">Bike paths</string>
+    <string name="titulo_botonsheetprincipal">Places filter</string>
+    <string name="titulo_botonsheetcomida">Description of the content</string>
+    <string name="descripcion_comidasaludable">"In this section you can add places that you consider to be in the range of healthy food"</string>
+    <string name="home">Filters</string>
+    <string name="agregar_lugar">"Add place"</string>
+    <string name="cambiodevista_normal">"Normal map view"</string>
+    <string name="cambiodevista_hibrido">"Map view by satellite"</string>
+    <string name="nombre_lugar">"Name of the place"</string>
+    <string name="descripcion_lugar">"Description of the place"</string>
+    <string name="agregar_imagen">"Add place image"</string>
+    <string name="tab1">Healthy</string>
+    <string name="continuar">"Continue  "</string>
+    <string name="tab2">Unhealthy</string>
+    <string name="tab3">Intermediate</string>
+    <string name="hint_buscardireccion">Find address</string>
+    <string name="informacion_imges_comida_01">You can add places where they sell healthy food</string>
+    <string name="informacion_imges_comida_02">Add places that stand out for providing healthy food for vegans, vegetarians, and carnivores.</string>
+    <string name="informacion_imges_comida_03">If you consider that a place falls within the range of healthy food, you can add it in this section.</string>
+    <string name="filtocomida">Foods</string>
+    <string name="filtoejercicio">Exercise</string>
+    <string name="filtoejerciciopri"> Exercise</string>
+    <string name="filtocaminata">Hikes</string>
+    <string name="filtociclorutas">Routes cycle</string>
+    <string name="filtociclorutaspri"> Routes cycle</string>
+    <string name="quitarfiltros"> Remove filters</string>
+
+</resources>

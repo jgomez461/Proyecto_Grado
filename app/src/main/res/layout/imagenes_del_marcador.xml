@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="320dp"
+    android:layout_height="260dp"
+    android:layout_gravity="center" >
+
+
+    <ImageView
+        android:id="@+id/imagenescargadas"
+        android:layout_width="320dp"
+        android:layout_height="260dp"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:layout_weight="1"
+        android:scaleType="fitXY"
+        android:src="@drawable/prueba" />
+
+    <RelativeLayout
+        android:id="@+id/relative"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignBottom="@+id/imagenescargadas"
+        android:background="#7CFBF7F7">
+
+        <ImageButton
+            android:id="@+id/eliminar_imagen"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:background="#00FFFFFF"
+            android:src="@drawable/eliminar_imagen" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/imagenactual"
+        android:layout_width="32.5dp"
+        android:layout_height="22.5dp"
+        android:layout_alignEnd="@+id/imagenescargadas"
+        android:layout_alignRight="@+id/imagenescargadas"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginRight="11dp"
+        android:background="@drawable/cantidaddedatosredondo"
+        android:gravity="center"
+        android:text="6/6"
+        android:textSize="10dp"
+        android:textColor="#FFFFFF" />
+
+
+</RelativeLayout>

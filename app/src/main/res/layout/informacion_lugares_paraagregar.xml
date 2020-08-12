@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:layout_marginLeft="5dp"
+    >
+
+    <FrameLayout
+        android:layout_width="160dp"
+        android:layout_height="170dp"
+        >
+
+        <ImageView
+            android:id="@+id/informacion_comida_saludable"
+            android:layout_width="160dp"
+            android:background="@drawable/redondeo_framelayout"
+            android:layout_height="170dp"
+            android:src="@drawable/prueba_imagenes_redondeo_eliminar_despues" />
+
+        <TextView
+            android:id="@+id/contenido"
+            android:layout_width="160dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="100dp"
+            android:layout_alignBottom="@id/informacion_comida_saludable"
+            android:gravity="center"
+            android:text="en esta sección puedes agregar sncjsncjdsncscj dnscjdsncjdsncj dsncjd cdksmckdscs kcjdk jcd jcd ij jh jhsdu uhcsducs"
+            android:textAlignment="inherit"
+            android:background="@drawable/bordertextimage"
+            android:textColor="@color/coloWgite"
+            android:textSize="11dp" />
+
+    </FrameLayout>
+</RelativeLayout>

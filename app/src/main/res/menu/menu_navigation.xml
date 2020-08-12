@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menuhome"
+        android:title="@string/home"
+        android:icon="@drawable/home"
+        android:enabled="true"
+        />
+    <item
+        android:id="@+id/menucomida"
+        android:title="@string/comida"
+        android:icon="@drawable/comida"
+        android:enabled="true"
+        />
+
+    <item
+        android:id="@+id/menudeportivo"
+        android:title="@string/deportivo"
+        android:icon="@drawable/deporte"
+        android:enabled="true"
+        />
+
+
+    <item
+        android:id="@+id/menucaminatas"
+        android:title="@string/caminatas"
+        android:icon="@drawable/caminatas"
+        android:enabled="true"
+        />
+    <item
+        android:id="@+id/menuciclorutas"
+        android:title="@string/ciclorutas"
+        android:icon="@drawable/ciclorutas"
+        android:enabled="true"
+        />
+
+</menu>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="1dp" >
+
+    <ImageView
+        android:id="@+id/info_window_imagen"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/prueba"
+        tools:ignore="RtlCompat" />
+
+    <TextView
+        android:id="@+id/info_window_nombre"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textColor="#020202"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_toRightOf="@id/info_window_imagen"
+        android:paddingLeft="5dp"
+        android:text="direcciónhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" />
+
+    <TextView
+        android:id="@+id/info_window_placas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info_window_nombre"
+        android:layout_toRightOf="@id/info_window_imagen"
+        android:paddingLeft="5dp"
+        android:text="codigo postal"
+        />
+
+    <TextView
+        android:id="@+id/info_window_estado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:layout_below="@id/info_window_placas"
+        android:layout_toRightOf="@id/info_window_imagen"
+        android:text="mas imagenes" />
+
+    <ImageButton
+        android:id="@+id/eliminar_marcador"
+        android:layout_width="38dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="242.1dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/delete_mark" />
+
+
+
+</RelativeLayout>

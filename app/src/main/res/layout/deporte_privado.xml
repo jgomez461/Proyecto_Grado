@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:aap="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:behavior_peekHeight="60dp"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustResize|adjustPan"
+        android:scrollbarThumbVertical="@drawable/scrollview_thumb"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Agregar Imagenes al lugar"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginBottom="2dp"
+                    />
+                <Button
+                    android:id="@+id/boton_imagenes"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/cargar_imagen"
+                    android:drawablePadding="6dp"
+                    android:gravity="left|center"
+                    android:background="@drawable/estilobutton"
+                    android:height="30dp"
+                    android:padding="6dp"
+                    android:text="Agregar Imagen"
+                    android:textColor="#000"
+                    android:textStyle="bold"
+                    android:layout_height="40dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:id="@+id/cargar_imagenes"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:src="@drawable/prueba"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
