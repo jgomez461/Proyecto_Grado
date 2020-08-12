@@ -94,7 +94,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Marker marcadorprincipal = null;
 
-
     //variable de barra de estados
     private BottomNavigationView bottomNavigationView;
     //variables para buscar direccion
