@@ -1,22 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginLeft="5dp"
-    >
-    
-    <androidx.viewpager.widget.ViewPager
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:foregroundGravity="center"
-        android:id="@+id/viewPager"
-        android:layout_centerInParent="true"
-        android:overScrollMode="never"
-        android:clipToPadding="false"
-        >
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="29dp"
+        android:layout_margin="8dp">
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+            
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/informacion_comida_saludable"
+                android:scaleType="centerCrop"
+                android:src="@drawable/informacion_comida_saludable_01"
+                />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/informacion_comida_saludable"
+                android:id="@+id/titulo"
+                android:textColor="#262626"
+                android:text="Titulo"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="16dp"
+                android:textSize="20sp" />
 
-    </androidx.viewpager.widget.ViewPager>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/contenido"
+                android:layout_below="@id/titulo"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:maxLines="3"
+                android:text="cndjncdj cdcndjcd jcdjcd jhcdjcd jchdjhcjd hjcd jh y jchd jchd cd j cdjhcd cdjhcd cdjhcdjcd cdjhcdjcd jhcdjchdc jhcdjchdjcd jchjdhcjd jhcjdchdj jchdjhcd jhcdjhcdj hcdhjchdjchdj"
+                android:drawablePadding="10dp"
+                android:ellipsize="end"
+                />
 
-</RelativeLayout>
+        </RelativeLayout>
+        
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
