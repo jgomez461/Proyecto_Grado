@@ -5,20 +5,20 @@
     <item
         android:id="@+id/menuhome"
         android:title="@string/home"
-        android:icon="@drawable/home"
+        android:icon="@drawable/home_menu"
         android:enabled="true"
         />
     <item
         android:id="@+id/menucomida"
         android:title="@string/comida"
-        android:icon="@drawable/comida"
+        android:icon="@drawable/food_home"
         android:enabled="true"
         />
 
     <item
         android:id="@+id/menudeportivo"
         android:title="@string/deportivo"
-        android:icon="@drawable/deporte"
+        android:icon="@drawable/exercise_home"
         android:enabled="true"
         />
 
@@ -26,13 +26,13 @@
     <item
         android:id="@+id/menucaminatas"
         android:title="@string/caminatas"
-        android:icon="@drawable/caminatas"
+        android:icon="@drawable/run_home"
         android:enabled="true"
         />
     <item
         android:id="@+id/menuciclorutas"
         android:title="@string/ciclorutas"
-        android:icon="@drawable/ciclorutas"
+        android:icon="@drawable/cycle_home"
         android:enabled="true"
         />
 

@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:paddingRight="10dp"
-            android:drawableLeft="@drawable/princ_quitarfiltro"
+            android:drawableLeft="@drawable/princ_quitar_filtro"
             android:gravity="center"
             android:paddingLeft="10dp"
             android:text="@string/quitarfiltros"

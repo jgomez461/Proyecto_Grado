@@ -185,11 +185,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, Locale.getDefault().getLanguage() + "  true", Toast.LENGTH_SHORT).show();
             cambiidiomaa = true;
             textocambiaidioma.setText("ES");
+            cambioidioma.setImageResource(R.drawable.language);
         } else {
             Toast.makeText(this, Locale.getDefault().getLanguage(), Toast.LENGTH_SHORT).show();
             Log.d("idioma", Locale.getDefault().getLanguage() + "  ingles false");
             cambiidiomaa = false;
             textocambiaidioma.setText("EN");
+            cambioidioma.setImageResource(R.drawable.language_change);
         }
 
         //cambiamos el idioma true=español y false=ingles
@@ -204,11 +206,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     getBaseContext().getResources().updateConfiguration(configuration_es, getBaseContext().getResources().getDisplayMetrics());
                     Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                     cambiidiomaa = false;
-                    //intent.putExtra("bandera", cambiidiomaa);
                     textocambiaidioma.setText("ES");
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-
                 } else {
                     Locale ingles = new Locale("en", "EN");
                     Locale.setDefault(ingles);
@@ -292,7 +292,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ArrayList<FiltrosMarcadores_Mapsactivity_principal> texto = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(MapsActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.quitarfiltros, R.drawable.princ_quitarfiltro));
+        texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.quitarfiltros, R.drawable.princ_quitar_filtro));
         texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.filtocomida, R.drawable.princ_comida_filtro));
         texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.filtoejerciciopri, R.drawable.princ_ejercicio_filtro));
         texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.filtocaminata, R.drawable.princ_correr_filtro));
@@ -583,6 +583,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             return;
         }
+
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
