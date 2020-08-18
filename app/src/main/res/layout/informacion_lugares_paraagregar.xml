@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginLeft="5dp"
-    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="160dp"
-        android:layout_height="170dp"
-        >
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="29dp"
+        android:layout_margin="8dp">
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+            
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/informacion_comida_saludable"
+                android:scaleType="centerCrop"
+                android:src="@drawable/informacion_comida_saludable_01"
+                />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/informacion_comida_saludable"
+                android:id="@+id/titulo"
+                android:textColor="#262626"
+                android:text="Titulo"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="16dp"
+                android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/informacion_comida_saludable"
-            android:layout_width="160dp"
-            android:background="@drawable/redondeo_framelayout"
-            android:layout_height="170dp"
-            android:src="@drawable/prueba_imagenes_redondeo_eliminar_despues" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/contenido"
+                android:layout_below="@id/titulo"
+                android:layout_marginTop="3dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:maxLines="3"
+                android:text="cndjncdj cdcndjcd jcdjcd jhcdjcd jchdjhcjd hjcd jh y jchd jchd cd j cdjhcd cdjhcd cdjhcdjcd cdjhcdjcd jhcdjchdc jhcdjchdjcd jchjdhcjd jhcjdchdj jchdjhcd jhcdjhcdj hcdhjchdjchdj"
+                android:drawablePadding="10dp"
+                android:ellipsize="end"
+                />
 
-        <TextView
-            android:id="@+id/contenido"
-            android:layout_width="160dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="100dp"
-            android:layout_alignBottom="@id/informacion_comida_saludable"
-            android:gravity="center"
-            android:text="en esta sección puedes agregar sncjsncjdsncscj dnscjdsncjdsncj dsncjd cdksmckdscs kcjdk jcd jcd ij jh jhsdu uhcsducs"
-            android:textAlignment="inherit"
-            android:background="@drawable/bordertextimage"
-            android:textColor="@color/coloWgite"
-            android:textSize="11dp" />
+        </RelativeLayout>
+        
+    </androidx.cardview.widget.CardView>
 
-    </FrameLayout>
-</RelativeLayout>
+</LinearLayout>

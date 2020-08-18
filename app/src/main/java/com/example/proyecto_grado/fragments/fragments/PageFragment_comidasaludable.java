@@ -1,5 +1,6 @@
 package com.example.proyecto_grado.fragments.fragments;
 
+import android.animation.ArgbEvaluator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,9 +14,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,7 +31,9 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
+import com.example.proyecto_grado.Clases.Model_iformacion_lugares;
 import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
 
@@ -48,7 +54,7 @@ public class PageFragment_comidasaludable extends Fragment {
     private ImageButton rotarizquierda;
     private ImageButton restaurar;
     private RecyclerView recylcerimagenes;
-    private RecyclerView imagenesinformacion;
+    private ViewPager imagenesinformacion;
     private int contadorizqui = 0;
     private int contadorderecha = 360;
     private ArrayList<Imagenes_Recycler_Uris> uris = new ArrayList<>();
@@ -62,18 +68,73 @@ public class PageFragment_comidasaludable extends Fragment {
     private float xBegin = 0;
     private float yBegin = 0;
 
+    ViewPager viewPager;
+    Adaptador_informacion_lugares adapter;
+    List<Model_iformacion_lugares> model_iformacion_lugares;
+    Integer[] colors = null;
+    ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
     PhotoViewAttacher photoViewAttacher;
     RecyclerViewImagenes_lugares_comida adaptador;
-    RecyclerViewImagenesInformacionComidaSaludable adaptadorinformacion;
+    //RecyclerViewImagenesInformacionComidaSaludable adaptadorinformacion;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //View viewGroup = inflater.inflate(R.layout.pageviewcomidasaludable, container, false);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.pageviewcomidasaludable, container, false);
+
+
+        //En este espacion agregamos las imagenes que van como información para el item de comida saludable
+        model_iformacion_lugares = new ArrayList<>();
+        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.informacion_comida_saludable_01, "PRIMERO", "este es el contenido 1"));
+        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.informacion_comida_saludable_02, "SEGUNDO", "este es el contenido 2"));
+        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.informacion_comidasaludable_03, "TERCERO", "este es el contenido 3"));
+
+        adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
         añadirimagen = (Button) viewGroup.findViewById(R.id.cargarimagen);
         recylcerimagenes = (RecyclerView) viewGroup.findViewById(R.id.recyvlerimagenes);
-        imagenesinformacion = (RecyclerView) viewGroup.findViewById(R.id.recyclerinformacion);
+        //imagenesinformacion = (RecyclerView) viewGroup.findViewById(R.id.recyclerinformacion);
+        imagenesinformacion = viewGroup.findViewById(R.id.recyclerinformacion);
+        imagenesinformacion.setAdapter(adapter);
+        imagenesinformacion.setPadding(130, 0, 130, 0);
+
+        Integer[] colors_temp = {
+                getResources().getColor(R.color.colorAccent),
+                getResources().getColor(R.color.colornaranjaosucro),
+                getResources().getColor(R.color.colorPrimaryDark)
+        };
+
+        colors = colors_temp;
+
+        imagenesinformacion.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if(position < (adapter.getCount() -1) && position < (colors.length - 1)){
+                    imagenesinformacion.setBackgroundColor(
+                            (Integer) argbEvaluator.evaluate(
+                                    positionOffset,
+                                    colors[position],
+                                    colors[position]
+                            )
+                    );
+                }else{
+                    imagenesinformacion.setBackgroundColor(colors[colors.length - 1]);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
 
         añadirimagen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,12 +149,11 @@ public class PageFragment_comidasaludable extends Fragment {
             recylcerimagenes.setVisibility(View.VISIBLE);
         }
 
-
-
-        informacionconimagens();
+        //informacionconimagens();
 
         return viewGroup;
     }
+
 /*
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -133,7 +193,6 @@ public class PageFragment_comidasaludable extends Fragment {
     public void datoss() {
         dialogPhoto();
     }
-
 
     private void dialogPhoto() {
         try {
@@ -197,11 +256,11 @@ public class PageFragment_comidasaludable extends Fragment {
         startActivityForResult(intentar, CODIGO_FOTO);
     }
 
-    private void informacionconimagens(){
+    /*private void informacionconimagens(){
         imagenesinformacion.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         adaptadorinformacion = new RecyclerViewImagenesInformacionComidaSaludable(getContext());
         imagenesinformacion.setAdapter(adaptadorinformacion);
-    }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -268,7 +327,7 @@ public class PageFragment_comidasaludable extends Fragment {
         recylcerimagenes.setAdapter(adaptador);
     }
 
-    //COn este metodo se hace la conversión de Bitmap a uri, el problema es que crea otra carpeta aparate de la que ya creamos
+    //Con este metodo se hace la conversión de Bitmap a uri, el problema es que crea otra carpeta aparate de la que ya creamos
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);

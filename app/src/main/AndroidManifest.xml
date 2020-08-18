@@ -26,7 +26,7 @@
         android:hardwareAccelerated="false"
 
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionabar">
         <activity android:name=".complementos.FiltrosMarcadores_Mapsactivity_principal"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
