@@ -36,6 +36,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.proyecto_grado.Clases.Model_iformacion_lugares;
 import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
+import com.google.android.gms.common.util.Strings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -54,7 +55,7 @@ public class PageFragment_comidasaludable extends Fragment {
     private ImageButton rotarizquierda;
     private ImageButton restaurar;
     private RecyclerView recylcerimagenes;
-    private ViewPager imagenesinformacion;
+    private ViewPager   imagenesinformacion;
     private int contadorizqui = 0;
     private int contadorderecha = 360;
     private ArrayList<Imagenes_Recycler_Uris> uris = new ArrayList<>();
@@ -71,8 +72,6 @@ public class PageFragment_comidasaludable extends Fragment {
     ViewPager viewPager;
     Adaptador_informacion_lugares adapter;
     List<Model_iformacion_lugares> model_iformacion_lugares;
-    Integer[] colors = null;
-    ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
     PhotoViewAttacher photoViewAttacher;
     RecyclerViewImagenes_lugares_comida adaptador;
@@ -87,9 +86,9 @@ public class PageFragment_comidasaludable extends Fragment {
 
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.informacion_comida_saludable_01, "PRIMERO", "este es el contenido 1"));
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.informacion_comida_saludable_02, "SEGUNDO", "este es el contenido 2"));
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.informacion_comidasaludable_03, "TERCERO", "este es el contenido 3"));
+        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_1, R.string.titulo_1, R.string.informacion_imges_comida_01));
+        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_2, R.string.titulo_2, R.string.informacion_imges_comida_02));
+        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_3, R.string.titulo_3, R.string.informacion_imges_comida_03));
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
@@ -99,42 +98,6 @@ public class PageFragment_comidasaludable extends Fragment {
         imagenesinformacion = viewGroup.findViewById(R.id.recyclerinformacion);
         imagenesinformacion.setAdapter(adapter);
         imagenesinformacion.setPadding(130, 0, 130, 0);
-
-        Integer[] colors_temp = {
-                getResources().getColor(R.color.colorAccent),
-                getResources().getColor(R.color.colornaranjaosucro),
-                getResources().getColor(R.color.colorPrimaryDark)
-        };
-
-        colors = colors_temp;
-
-        imagenesinformacion.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if(position < (adapter.getCount() -1) && position < (colors.length - 1)){
-                    imagenesinformacion.setBackgroundColor(
-                            (Integer) argbEvaluator.evaluate(
-                                    positionOffset,
-                                    colors[position],
-                                    colors[position]
-                            )
-                    );
-                }else{
-                    imagenesinformacion.setBackgroundColor(colors[colors.length - 1]);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
 
         añadirimagen.setOnClickListener(new View.OnClickListener() {
             @Override

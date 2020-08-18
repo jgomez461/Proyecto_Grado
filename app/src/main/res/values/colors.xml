@@ -9,4 +9,6 @@
     <color name="colorverdeoscuro">#425C5A</color>
     <color name="colornaranjaosucro">#F48403</color>
     <color name="colorverde">#EFA850</color>
+    <color name="colortransparente">#79FFFFFF</color>
+    <color name="colorgrisclaro">#9F9C9C</color>
 </resources>

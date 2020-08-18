@@ -17,19 +17,22 @@
     <string name="cambiodevista_hibrido">"Vista de mapa por satelite"</string>
     <string name="nombre_lugar">"Nombre del lugar"</string>
     <string name="descripcion_lugar">"Descripción del lugar"</string>
-    <string name="agregar_imagen">"Agregar imagen del lugar"</string>
+    <string name="agregar_imagen">"Agregar imagen"</string>
     <string name="continuar">"Continuar  "</string>
     <string name="titulo_botonsheetprincipal">Filtro de lugares</string>
     <string name="hint_buscardireccion">Buscar dirección</string>
+    <string name="titulo_1">Tiendas saludables</string>
+    <string name="titulo_2">Alimentos variados</string>
+    <string name="titulo_3">Restaurantes saludables</string>
     <string name="informacion_imges_comida_01">Puedes agregar lugares donde vendan alimentos saludables.</string>
-    <string name="informacion_imges_comida_02">Agrega lugares que se destaquen por brindar comida saludable para veganos, vegetarianos y carnívoros.</string>
-    <string name="informacion_imges_comida_03">Si consideras que un lugar entra en el rango de comida saludable, puedes agregarlo en esta sección.</string>
+    <string name="informacion_imges_comida_02">Agrega lugares que se destaquen por brindar comida saludable para personas con difrentes estilos alimenticios.</string>
+    <string name="informacion_imges_comida_03">Si consideras que un lugar entra en el rango de comida saludable puedes agregarlo en esta sección.</string>
     <string name="filtocomida">Comidas</string>
     <string name="filtoejercicio">Ejercicio</string>
     <string name="filtoejerciciopri"> Ejercicio</string>
     <string name="filtocaminata">Caminatas</string>
     <string name="filtociclorutas">Ciclo rutas</string>
     <string name="filtociclorutaspri"> Ciclo rutas</string>
-    <string name="quitarfiltros"> Quitar filtros</string>
+    <string name="quitarfiltros"> Quitar filtro</string>
 
 </resources>
