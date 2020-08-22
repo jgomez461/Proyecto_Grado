@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Proyecto Grado</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_login_user">Registro Usuario</string>
     <string name="inicio">Inicio</string>
     <string name="comida">Comida</string>
     <string name="deportivo">Deporte</string>
@@ -34,5 +35,12 @@
     <string name="filtociclorutas">Ciclo rutas</string>
     <string name="filtociclorutaspri"> Ciclo rutas</string>
     <string name="quitarfiltros"> Quitar filtro</string>
-
+    <string name="login">Ingresar</string>
+    <string name="usuario"> Ingrese el usuario o el código</string>
+    <string name="clave"> Ingrese la clave</string>
+    <string name="ingreso">Hola</string>
+    <string name="ingreso_account">Ingresa tu cuenta</string>
+    <string name="text_account">¿No tienes una cuenta?</string>
+    <string name="registro">Registrate ahora</string>
+    <string name="acceder">Ingreso</string>
 </resources>

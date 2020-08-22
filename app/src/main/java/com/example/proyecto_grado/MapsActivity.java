@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -134,11 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //con esto le damos un color diferente a la barra superior de la app
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setStatusBarColor(Color.WHITE);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
+
 
         mtypebutton = (ImageButton) findViewById(R.id.btnsatelite);
         buscardireccionn = (EditText) findViewById(R.id.location);

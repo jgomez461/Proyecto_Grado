@@ -142,6 +142,8 @@
                             app:errorEnabled="true"
                             app:hintEnabled="false">
 
+
+
                             <EditText
                                 android:id="@+id/textodescripcion"
                                 android:layout_width="match_parent"

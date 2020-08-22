@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Degree project</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_login_user">User Register</string>
     <string name="inicio">Start</string>
     <string name="comida">Food</string>
     <string name="deportivo">Sport</string>
@@ -35,5 +36,12 @@
     <string name="filtociclorutas">Routes cycle</string>
     <string name="filtociclorutaspri"> Routes cycle</string>
     <string name="quitarfiltros"> Remove filter</string>
-
+    <string name="login">Login</string>
+    <string name="usuario"> Enter username or code</string>
+    <string name="clave"> Enter password</string>
+    <string name="ingreso">Hello</string>
+    <string name="ingreso_account">Sing into your account</string>
+    <string name="text_account">"¿Don't have an account?"</string>
+    <string name="registro">Register Now</string>
+    <string name="acceder">Login</string>
 </resources>
