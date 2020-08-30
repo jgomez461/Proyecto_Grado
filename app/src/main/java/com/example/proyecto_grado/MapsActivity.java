@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +28,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
@@ -134,11 +138,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //con esto le damos un color diferente a la barra superior de la app
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getWindow().setStatusBarColor(Color.WHITE);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
 
         mtypebutton = (ImageButton) findViewById(R.id.btnsatelite);
         buscardireccionn = (EditText) findViewById(R.id.location);
@@ -179,17 +178,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
+        SharedPreferences usario_datos = getSharedPreferences("Usuario_info", this.MODE_PRIVATE);
+        int id = usario_datos.getInt("id", 0);
+
+        Toast.makeText(this, "Id: "+ id, Toast.LENGTH_SHORT).show();
 
         if (Locale.getDefault().getLanguage().equals("es")) {
             Log.d("idioma", Locale.getDefault().getLanguage() + " true");
-            Toast.makeText(this, Locale.getDefault().getLanguage() + "  true", Toast.LENGTH_SHORT).show();
             cambiidiomaa = true;
             textocambiaidioma.setText("ES");
+            cambioidioma.setImageResource(R.drawable.language);
         } else {
             Toast.makeText(this, Locale.getDefault().getLanguage(), Toast.LENGTH_SHORT).show();
             Log.d("idioma", Locale.getDefault().getLanguage() + "  ingles false");
             cambiidiomaa = false;
             textocambiaidioma.setText("EN");
+            cambioidioma.setImageResource(R.drawable.language_change);
         }
 
         //cambiamos el idioma true=español y false=ingles
@@ -204,11 +208,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     getBaseContext().getResources().updateConfiguration(configuration_es, getBaseContext().getResources().getDisplayMetrics());
                     Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                     cambiidiomaa = false;
-                    //intent.putExtra("bandera", cambiidiomaa);
                     textocambiaidioma.setText("ES");
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-
                 } else {
                     Locale ingles = new Locale("en", "EN");
                     Locale.setDefault(ingles);
@@ -287,12 +289,66 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // Con este metodo controlamos el boton retroceder del celular
+    int contarsalir = 0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            contarsalir++;
+            if( contarsalir == 2 ){
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Salir")
+                        .setMessage("Estás seguro?")
+                        .setNegativeButton(android.R.string.cancel, null)//sin listener
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {//un listener que al pulsar, cierre la aplicacion
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                                //Salir
+                                moveTaskToBack(true);
+                            }
+                        })
+                        .show();
+            }else if( contarsalir == 3 ){
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Cerrar sesión")
+                        .setMessage("¿Estás seguro que deseas cerrar sesión?")
+                        .setNegativeButton(android.R.string.cancel, null)//sin listener
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {//un listener que al pulsar, cierre la aplicacion
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                                //Salir
+                                salirSesion();
+                                Intent intent = new Intent(MapsActivity.this, Login_users.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra("EXIT", true);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
+                contarsalir=0;
+            }
+            // Si el listener devuelve true, significa que el evento esta procesado, y nadie debe hacer nada mas
+            return true;
+        }
+        //para las demas cosas, se reenvia el evento al listener habitual
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void salirSesion() {
+        SharedPreferences usario_datos = getSharedPreferences("Usuario_info", this.MODE_PRIVATE);
+        SharedPreferences.Editor editor = usario_datos.edit();
+        editor.clear();
+        editor.commit();
+    }
+
     //con este metodo lanzamos los filtros para que el usuario no tenga que darle click a home
     public void filtrosalamamohome(final RecyclerView recyclerView, int posicion) {
 
         ArrayList<FiltrosMarcadores_Mapsactivity_principal> texto = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(MapsActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.quitarfiltros, R.drawable.princ_quitarfiltro));
+        texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.quitarfiltros, R.drawable.princ_quitar_filtro));
         texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.filtocomida, R.drawable.princ_comida_filtro));
         texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.filtoejerciciopri, R.drawable.princ_ejercicio_filtro));
         texto.add(new FiltrosMarcadores_Mapsactivity_principal(R.string.filtocaminata, R.drawable.princ_correr_filtro));
@@ -583,6 +639,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             return;
         }
+
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override

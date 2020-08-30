@@ -51,7 +51,7 @@ public class Adaptador_informacion_lugares extends PagerAdapter {
 
         imageView.setImageResource(model_iformacion_lugares.get(position).getImagen());
         title.setText(model_iformacion_lugares.get(position).getTitulo());
-        description.setText(model_iformacion_lugares.get(position).getTitulo());
+        description.setText(model_iformacion_lugares.get(position).getContenido());
 
         container.addView(view, 0);
 

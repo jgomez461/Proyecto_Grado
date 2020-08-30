@@ -222,7 +222,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_language_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialiconsoutlined/autorenew/outline_autorenew_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -232,7 +232,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="cambio_de_idioma_mundo" />
+                            <entry key="color" value="f9f6ed" />
+                            <entry key="outputName" value="random" />
                             <entry key="sourceFile" value="C:\Users\Jgomez" />
                           </map>
                         </option>

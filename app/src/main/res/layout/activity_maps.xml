@@ -31,14 +31,14 @@
         android:layout_alignParentTop="false"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="false"
+        android:padding="30dp"
+        android:scaleType="centerCrop"
         android:layout_marginTop="56dp"
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
         android:adjustViewBounds="true"
         android:background="#D3FFFFFF"
-        android:src="@drawable/cambio_de_icono"
-        tools:layout_editor_absoluteX="1260dp"
-        tools:layout_editor_absoluteY="403dp"/>
+        android:src="@drawable/cambio_de_icono"/>
 
     <EditText
         android:id="@+id/location"
@@ -117,7 +117,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         map:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-        android:background="@android:color/background_light"
+        android:background="#92FFFFFF"
         map:itemIconTint="@drawable/cambio_color_icon_bottom_view"
         map:itemTextColor="@drawable/cambio_color_textoicono_bottom_view"
         android:layout_alignParentLeft="true"
@@ -128,19 +128,15 @@
         android:id="@+id/cambioidioma"
         android:layout_width="38dp"
         android:layout_height="37dp"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="false"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_below="@+id/btnsatelite"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:padding="32dp"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="12.5dp"
         android:adjustViewBounds="true"
-        android:background="#D3FFFFFF"
-        tools:layout_editor_absoluteX="1260dp"
-        tools:layout_editor_absoluteY="403dp"
-
-        android:src="@drawable/cambio_de_idioma_mundo"
-        />
+        android:background="#D8FFFFFF"
+        android:src="@drawable/language" />
 
     <TextView
         android:id="@+id/textoidioma"
@@ -150,11 +146,11 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="122dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="13dp"
         android:layout_marginRight="12dp"
         android:text="ES"
         android:gravity="end|bottom"
-        android:textSize="10dp"
+        android:textSize="7dp"
         />
 
 

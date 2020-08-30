@@ -3,10 +3,10 @@ package com.example.proyecto_grado.Clases;
 public class Model_iformacion_lugares {
 
     private int imagen;
-    private String titulo;
-    private String contenido;
+    private int titulo;
+    private int contenido;
 
-    public Model_iformacion_lugares(int imagen, String titulo, String contenido) {
+    public Model_iformacion_lugares(int imagen, int titulo, int contenido) {
         this.imagen = imagen;
         this.titulo = titulo;
         this.contenido = contenido;
@@ -20,19 +20,19 @@ public class Model_iformacion_lugares {
         this.imagen = imagen;
     }
 
-    public String getTitulo() {
+    public int getTitulo() {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
+    public void setTitulo(int titulo) {
         this.titulo = titulo;
     }
 
-    public String getContenido() {
+    public int getContenido() {
         return contenido;
     }
 
-    public void setContenido(String contenido) {
+    public void setContenido(int contenido) {
         this.contenido = contenido;
     }
 }
