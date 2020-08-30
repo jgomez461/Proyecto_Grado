@@ -89,10 +89,10 @@
                 <EditText
                     android:id="@+id/codigo"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="35dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="0dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="35dp"
                     android:background="@drawable/estilo_login"
                     android:hint="@string/usuario"
                     android:paddingLeft="6dp"
@@ -101,9 +101,9 @@
                     android:textSize="12dp" />
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="-30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="-35dp"
                     android:background="@drawable/estilo_login"
                     android:layout_marginLeft="-40dp"
                     android:layout_toEndOf="@+id/codigo"
@@ -123,11 +123,11 @@
                 <EditText
                     android:id="@+id/clave"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="35dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="0dp"
                     android:inputType="textPassword"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="35dp"
                     android:background="@drawable/estilo_login"
                     android:hint="@string/clave"
                     android:paddingLeft="6dp"
@@ -137,9 +137,9 @@
 
                 <ImageButton
                     android:id="@+id/key"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="-30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="-35dp"
                     android:background="@drawable/estilo_login"
                     android:layout_marginLeft="-40dp"
                     android:layout_toEndOf="@+id/codigo"
@@ -188,8 +188,6 @@
                 android:layout_toRightOf="@+id/account"
                 android:autoLink="all"
                 android:text="@string/registro" />
-
-
         </RelativeLayout>
 
     </RelativeLayout>

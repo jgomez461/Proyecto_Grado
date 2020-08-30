@@ -43,4 +43,21 @@
     <string name="text_account">¿No tienes una cuenta?</string>
     <string name="registro">Registrate ahora</string>
     <string name="acceder">Ingreso</string>
+    <string name="login_wrong">El usuario/código o la clave son incorrectas. volver a intentar</string>
+    <string name="empty_fields">Algunos campos están vacios</string>
+    <string name="try_again">Intentar de nuevo</string>
+    <string name="wrong">Error al ingresar</string>
+    <string name="register">Registro</string>
+    <string name="register_app">Registrate</string>
+    <string name="user">Usuario</string>
+    <string name="access_code">Código acceso</string>
+    <string name="name">Nombre</string>
+    <string name="password">Contraseña</string>
+    <string name="registro_correcto">Se ha registrado exitosamente</string>
+    <string name="cargando">Cargando, por favor espere...</string>
+    <string name="error_registro">No se pudo registrar en la app</string>
+    <string name="error_ingreso">No se pudo ingresar</string>
+    <string name="text_login">¿Seguro que ya tienes una cuenta?</string>
+    <string name="bienvenido">Bienvenido</string>
+
 </resources>

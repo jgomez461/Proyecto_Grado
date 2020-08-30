@@ -44,4 +44,21 @@
     <string name="text_account">"¿Don't have an account?"</string>
     <string name="registro">Register Now</string>
     <string name="acceder">Login</string>
+    <string name="login_wrong">The username/code or password is incorrect. try again</string>
+    <string name="empty_fields">Some fields are empty</string>
+    <string name="try_again">Try again</string>
+    <string name="wrong">error when entering</string>
+    <string name="register">Registro</string>
+    <string name="register_app">Register</string>
+    <string name="user">User</string>
+    <string name="access_code">Access code</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="registro_correcto">It has been successfully registered</string>
+    <string name="cargando">Loading Please wait...</string>
+    <string name="error_registro">Could not register in the app</string>
+    <string name="error_ingreso">Could not get into</string>
+    <string name="text_login">¿Already have an account?</string>
+    <string name="bienvenido">Welcome</string>
+
 </resources>
