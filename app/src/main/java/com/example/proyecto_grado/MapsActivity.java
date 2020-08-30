@@ -2,6 +2,7 @@ package com.example.proyecto_grado;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,11 +37,19 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.proyecto_grado.Homedialogos.Homedialogo;
 import com.example.proyecto_grado.Homedialogos.Homedialogo_Deportivo;
 import com.example.proyecto_grado.Homedialogos.HomendialogComidas;
 import com.example.proyecto_grado.complementos.FiltrosMarcadores_Mapsactivity_principal;
 import com.example.proyecto_grado.complementos.SliderPageAdapter_Comidas;
+import com.example.proyecto_grado.entidades.Lugar;
+import com.example.proyecto_grado.entidades.Usuario;
 import com.example.proyecto_grado.fragments.fragments.AdaptadorCategorias_principal;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,10 +63,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,7 +78,7 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.proyecto_grado.R.drawable.estilo_borde_editext_satelite;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Response.Listener<JSONObject>, Response.ErrorListener {
 
 
     AdaptadorCategorias_principal adaptador;
@@ -115,6 +127,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean banderaclick = false;
 
     private boolean ba = false;
+    private ArrayList<LatLng> lugares_usuario = new ArrayList<>();
+    private ArrayList<Lugar> lista_lugares_usuario = new ArrayList<>();
 
     //bandera para dejar solo el mapa
     private boolean banderamostrar = false;
@@ -177,11 +191,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(this, "el marcado es ciclorutas", Toast.LENGTH_SHORT).show();
             }
         }
-
-        SharedPreferences usario_datos = getSharedPreferences("Usuario_info", this.MODE_PRIVATE);
-        int id = usario_datos.getInt("id", 0);
-
-        Toast.makeText(this, "Id: "+ id, Toast.LENGTH_SHORT).show();
 
         if (Locale.getDefault().getLanguage().equals("es")) {
             Log.d("idioma", Locale.getDefault().getLanguage() + " true");
@@ -456,22 +465,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mover los botones zoom del mapa
         googleMap.setPadding(-20, 5, 0, 125);
 
-        //esta es una prueba que hacemos para mirar si está funcionando o no los filtros
-        //solo es una prueba
-        LatLng latLng = new LatLng(7.1000321656733405, -73.12352743378906);
-        LatLng latLng2 = new LatLng(7.1046249022857495, -73.11209359437005);
-        LatLng latLng3 = new LatLng(7.117950177866987, -73.10443675913243);
-        LatLng latLng4 = new LatLng(7.121218534488548, -73.11548746027914);
-        LatLng latLng5 = new LatLng(7.124722926557084, -73.11812694556178);
-        LatLng latLng6 = new LatLng(7.13162193113493, -73.12064497968733);
-        latLngsdepruebacaminatas.add(latLng);
-        latLngsdepruebacaminatas.add(latLng2);
-        latLngsdeprueba.add(latLng3);
-        latLngsdeprueba.add(latLng4);
-        latLngsdepruebacomida.add(latLng5);
-        latLngsdepruebacomida.add(latLng6);
-        if (filtros) {
+        consultaLugaresUsuario();
 
+        if (filtros) {
             if (banderaotro) {
                 for (int i = 0; i < latLngsdeprueba.size(); i++) {
                     getdirecciondetalleslongclick(latLngsdeprueba.get(i).latitude, latLngsdeprueba.get(i).longitude);
@@ -528,6 +524,69 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    ProgressDialog progressDialog;
+    RequestQueue requestQueue;
+    JsonObjectRequest jsonObjectRequest;
+    private void consultaLugaresUsuario() {
+        SharedPreferences usario_datos = getSharedPreferences("Usuario_info", this.MODE_PRIVATE);
+        int id = usario_datos.getInt("id", 0);
+
+        if( id != 0 ) {
+            requestQueue = Volley.newRequestQueue( this);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Lugares");
+            progressDialog.setMessage("Cargando lugares, por favor espere...");
+            progressDialog.show();
+
+            String url = "https://d9a625248d97.ngrok.io/DB_proyecto_grado/ws_consulta_lugares.php?usuario="+id+"";
+            url = url.replace(" ", "%20");
+
+            Log.d("url", url);
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+            requestQueue.add(jsonObjectRequest);
+        }else {
+
+        }
+    }
+
+    Lugar lugar =  new Lugar();
+    @Override
+    public void onResponse(JSONObject response) {
+        progressDialog.hide();
+        JSONArray jsonArray = response.optJSONArray("lugares");
+        try {
+            for( int i=0; i<jsonArray.length(); i++ ) {
+                Usuario usuario = new Usuario();
+                JSONObject jsonObject = null;
+                jsonObject = jsonArray.getJSONObject(i);
+
+                LatLng latLng = new LatLng( Double.parseDouble(jsonObject.getString("latitud")), Double.parseDouble(jsonObject.getString("longitud")));
+                lugar.setId(jsonObject.getInt("id"));
+                lugar.setUsuario(jsonObject.getInt("usuario"));
+                lugar.setDireccion(jsonObject.getString("direccion"));
+                lugar.setNombre_lugar(jsonObject.getString("nombre_lugar"));
+                lugar.setDescripcion_lugar(jsonObject.getString("descripcion_lugar"));
+                lugar.setTipo_lugar(jsonObject.getInt("tipo_lugar"));
+                lugar.setFecha_creacion(jsonObject.getString("fecha_creacion"));
+                lugar.setLatitud(Double.parseDouble(jsonObject.getString("latitud")));
+                lugar.setLongitud(Double.parseDouble(jsonObject.getString("longitud")));
+                lugares_usuario.add(latLng);
+                mMap.addMarker(new MarkerOptions().position(latLng).title("Prueba" + i));
+
+                lista_lugares_usuario.add(lugar);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        error.printStackTrace();
+        Toast.makeText(this, "Algo ocurrió con la consulta. intentarlo mas tarde" + error.getMessage(), Toast.LENGTH_SHORT).show();
+        progressDialog.hide();
+    }
+
     private boolean validarpermisos() {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -550,7 +609,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
     //permisos para mostrar mi direccion
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -565,7 +623,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
 
     private void solicitarpermisosmanual() {
 
@@ -658,7 +715,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
 
     // con este metodo convertimos una latitud y una longitud a direccion:
     public void getdirecciondetalles(double lat, double lon) {
@@ -792,7 +848,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.setOnInfoWindowClickListener(new Informacion_marker(LayoutInflater.from(this)));
         return false;
     }
-
 }
 
 

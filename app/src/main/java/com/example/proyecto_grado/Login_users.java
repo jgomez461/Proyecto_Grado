@@ -134,7 +134,7 @@ public class Login_users extends AppCompatActivity implements Response.Listener<
             progressDialog.setMessage("Verificando datos...");
             progressDialog.show();
 
-            String url = "http://8ce85a35c088.ngrok.io/DB_proyecto_grado/ws_consulta_usuario.php?usuario="+
+            String url = "https://d9a625248d97.ngrok.io/DB_proyecto_grado/ws_consulta_usuario.php?usuario="+
                     codigo.getText().toString() +"&codigo_acceso="+
                     codigo.getText().toString() +"&clave="+
                     clave.getText().toString()+"";
