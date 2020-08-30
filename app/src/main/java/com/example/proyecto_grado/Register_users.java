@@ -108,7 +108,7 @@ public class Register_users extends AppCompatActivity implements Response.Listen
 
             progressDialog.setMessage("Cargando, por favor espere...");
             progressDialog.show();
-            String url = "http://8ce85a35c088.ngrok.io/DB_proyecto_grado/ws_registro_user.php?nombre="+
+            String url = "https://d9a625248d97.ngrok.io/DB_proyecto_grado/ws_registro_user.php?nombre="+
                     nombre.getText().toString()+
                     "&usuario="+usuario.getText().toString()+
                     "&codigo_acceso="+codigo_acceso.getText().toString()
