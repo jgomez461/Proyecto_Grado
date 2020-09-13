@@ -59,5 +59,9 @@
     <string name="error_ingreso">No se pudo ingresar</string>
     <string name="text_login">¿Seguro que ya tienes una cuenta?</string>
     <string name="bienvenido">Bienvenido</string>
-
+    <string name="comida_saludable">Comida Saludable</string>
+    <string name="comida_intermedia">Comida Intermedia</string>
+    <string name="comida_no_saludable">Comida Saludable</string>
+    <string name="deporte_publico">Deporte Público</string>
+    <string name="deporte_privado">Deporte Privado</string>
 </resources>

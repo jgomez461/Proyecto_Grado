@@ -105,6 +105,7 @@
     <inspection_tool class="AndroidLintFindViewByIdCast" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AndroidLintFontValidationError" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="AndroidLintFontValidationWarning" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="AndroidLintFragmentTagUsage" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="AndroidLintFullBackupContent" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="AndroidLintGetContentDescriptionOverride" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="AndroidLintGetInstance" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -2137,7 +2138,7 @@
     <inspection_tool class="SwitchStatementWithTooManyBranches" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="m_limit" value="10" />
     </inspection_tool>
-    <inspection_tool class="SwitchStatementsWithoutDefault" enabled="true" level="INFORMATION" enabled_by_default="true">
+    <inspection_tool class="SwitchStatementsWithoutDefault" enabled="false" level="INFORMATION" enabled_by_default="false">
       <option name="m_ignoreFullyCoveredEnums" value="true" />
     </inspection_tool>
     <inspection_tool class="SynchronizationOnGetClass" enabled="true" level="WARNING" enabled_by_default="true" />

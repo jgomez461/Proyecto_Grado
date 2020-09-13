@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TabHost;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,20 @@ public class HomendialogComidas extends BottomSheetDialogFragment {
     private ViewPager viewPager;
     private TabLayout tabs;
     private PagerAdapter pagerAdapter;
+    private double latitud;
+    private double longitud;
+    private String direccion_lugar;
+    private int posicion = 5;
+
+    public HomendialogComidas(double latitud, double longitud, String direccion_lugar, int posicion) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion_lugar = direccion_lugar;
+        this.posicion = posicion;
+    }
+
+    public HomendialogComidas() {
+    }
 
     @Nullable
     @Override
@@ -33,14 +48,31 @@ public class HomendialogComidas extends BottomSheetDialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.boton_comida, null);
 
         List<Fragment> list = new ArrayList<>();
-        list.add(new PageFragment_comidasaludable());
-        list.add(new PageFragment_comidaintermedia());
-        list.add(new PageFragment_comidanosaludable());
+        if( posicion == 0 ){
+            list.add(new PageFragment_comidasaludable(latitud, longitud, direccion_lugar));
+            list.add(new PageFragment_comidaintermedia());
+            list.add(new PageFragment_comidanosaludable());
+        }else if( posicion == 1 ){
+            list.add(new PageFragment_comidaintermedia());
+            list.add(new PageFragment_comidaintermedia());
+            list.add(new PageFragment_comidanosaludable());
+        }else if( posicion == 2 ){
+            list.add(new PageFragment_comidanosaludable());
+            list.add(new PageFragment_comidaintermedia());
+            list.add(new PageFragment_comidanosaludable());
+        }else{
+            list.add(new PageFragment_comidasaludable());
+            list.add(new PageFragment_comidaintermedia());
+            list.add(new PageFragment_comidanosaludable());
+        }
 
         viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         pagerAdapter = new SliderPageAdapter_Comidas(getChildFragmentManager(), list);
         viewPager.setAdapter(pagerAdapter);
         tabs = (TabLayout) view.findViewById(R.id.tabs);
+        if( posicion != 5 ){
+            selectPage(posicion);
+        }
         tabs.setupWithViewPager(viewPager);
         setupTablayout();
 
@@ -51,6 +83,11 @@ public class HomendialogComidas extends BottomSheetDialogFragment {
         tabs.getTabAt(0).setIcon(R.drawable.icono_comidasaludable);
         tabs.getTabAt(1).setIcon(R.drawable.icono_comidaintermedia);
         tabs.getTabAt(2).setIcon(R.drawable.icono_comidanosaludable);
+    }
+
+    void selectPage(int pageIndex){
+        tabs.setScrollPosition(pageIndex,0f,true);
+        viewPager.setCurrentItem(pageIndex);
     }
 
 

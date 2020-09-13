@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -49,13 +50,15 @@ import static android.app.Activity.RESULT_OK;
 
 public class PageFragment_comidasaludable extends Fragment {
 
+    private EditText textodescripcion;
+    private EditText nombre_lugar;
     private Button añadirimagen;
     private ImageView imagenes;
     private ImageButton rotarderecha;
     private ImageButton rotarizquierda;
     private ImageButton restaurar;
     private RecyclerView recylcerimagenes;
-    private ViewPager   imagenesinformacion;
+    private ViewPager imagenesinformacion;
     private int contadorizqui = 0;
     private int contadorderecha = 360;
     private ArrayList<Imagenes_Recycler_Uris> uris = new ArrayList<>();
@@ -68,6 +71,11 @@ public class PageFragment_comidasaludable extends Fragment {
     private String path;
     private float xBegin = 0;
     private float yBegin = 0;
+    private double latitud;
+    private double longitud;
+    private String direccion_lugar;
+
+
 
     ViewPager viewPager;
     Adaptador_informacion_lugares adapter;
@@ -75,7 +83,17 @@ public class PageFragment_comidasaludable extends Fragment {
 
     PhotoViewAttacher photoViewAttacher;
     RecyclerViewImagenes_lugares_comida adaptador;
-    //RecyclerViewImagenesInformacionComidaSaludable adaptadorinformacion;
+
+    public PageFragment_comidasaludable(double latitud, double longitud, String direccion_lugar) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.direccion_lugar = direccion_lugar;
+    }
+
+    public PageFragment_comidasaludable() {
+    }
+
+
 
     @Nullable
     @Override
@@ -83,6 +101,12 @@ public class PageFragment_comidasaludable extends Fragment {
         //View viewGroup = inflater.inflate(R.layout.pageviewcomidasaludable, container, false);
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.pageviewcomidasaludable, container, false);
 
+        textodescripcion = viewGroup.findViewById(R.id.textodescripcion);
+        nombre_lugar = viewGroup.findViewById(R.id.nombre_lugar_c);
+
+        if( direccion_lugar != "" ){
+            nombre_lugar.setText(direccion_lugar);
+        }
 
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
@@ -97,7 +121,7 @@ public class PageFragment_comidasaludable extends Fragment {
         //imagenesinformacion = (RecyclerView) viewGroup.findViewById(R.id.recyclerinformacion);
         imagenesinformacion = viewGroup.findViewById(R.id.recyclerinformacion);
         imagenesinformacion.setAdapter(adapter);
-        imagenesinformacion.setPadding(130, 0, 130, 0);
+        imagenesinformacion.setCurrentItem(1);
 
         añadirimagen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +135,6 @@ public class PageFragment_comidasaludable extends Fragment {
         } else {
             recylcerimagenes.setVisibility(View.VISIBLE);
         }
-
         //informacionconimagens();
 
         return viewGroup;

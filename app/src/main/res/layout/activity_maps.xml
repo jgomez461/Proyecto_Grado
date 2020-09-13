@@ -110,6 +110,21 @@
         android:contentDescription="TODO"
         android:src="@drawable/delete_mark" />
 
+    <androidx.viewpager.widget.ViewPager
+        android:foregroundGravity="center"
+        android:id="@+id/informacion_markers"
+        android:layout_centerInParent="true"
+        android:overScrollMode="never"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:background="@color/colortransparente"
+        android:layout_height="240dp"
+        android:layout_alignBottom="@+id/boton_navegacion"
+        android:layout_marginBottom="40dp"
+        >
+
+    </androidx.viewpager.widget.ViewPager>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/boton_navegacion"
         android:layout_width="match_parent"

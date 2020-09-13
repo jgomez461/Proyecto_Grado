@@ -106,6 +106,7 @@
                             app:hintEnabled="false">
 
                             <EditText
+                                android:id="@+id/nombre_lugar_c"
                                 android:layout_width="match_parent"
                                 android:layout_height="35dp"
                                 android:background="@drawable/estiloedittextformcomidas"

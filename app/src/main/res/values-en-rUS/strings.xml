@@ -60,5 +60,10 @@
     <string name="error_ingreso">Could not get into</string>
     <string name="text_login">¿Already have an account?</string>
     <string name="bienvenido">Welcome</string>
+    <string name="comida_saludable">Healthy food</string>
+    <string name="comida_intermedia">Intermediate food</string>
+    <string name="comida_no_saludable">Unhealthy food</string>
+    <string name="deporte_publico">Public Sport</string>
+    <string name="deporte_privado">Private Sport</string>
 
 </resources>

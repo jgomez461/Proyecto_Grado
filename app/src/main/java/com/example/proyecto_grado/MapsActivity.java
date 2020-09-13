@@ -3,6 +3,7 @@ package com.example.proyecto_grado;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,13 +17,16 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,11 +35,13 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,6 +49,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.proyecto_grado.Clases.Model_iformacion_lugares;
+import com.example.proyecto_grado.Clases.VariablesGlobales;
 import com.example.proyecto_grado.Homedialogos.Homedialogo;
 import com.example.proyecto_grado.Homedialogos.Homedialogo_Deportivo;
 import com.example.proyecto_grado.Homedialogos.HomendialogComidas;
@@ -51,6 +59,10 @@ import com.example.proyecto_grado.complementos.SliderPageAdapter_Comidas;
 import com.example.proyecto_grado.entidades.Lugar;
 import com.example.proyecto_grado.entidades.Usuario;
 import com.example.proyecto_grado.fragments.fragments.AdaptadorCategorias_principal;
+import com.example.proyecto_grado.fragments.fragments.Adaptador_informacion_lugares;
+import com.example.proyecto_grado.fragments.fragments.Informacion_marker;
+import com.example.proyecto_grado.fragments.fragments.Informacion_markers;
+import com.example.proyecto_grado.fragments.fragments.PageFragment_comidasaludable;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -128,7 +140,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private boolean ba = false;
     private ArrayList<LatLng> lugares_usuario = new ArrayList<>();
-    private ArrayList<Lugar> lista_lugares_usuario = new ArrayList<>();
+    private List<Lugar> lista_lugares_usuario = new ArrayList<>();
+    private  List<Lugar> lugares_agregados = new ArrayList<>();
 
     //bandera para dejar solo el mapa
     private boolean banderamostrar = false;
@@ -300,11 +313,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Con este metodo controlamos el boton retroceder del celular
     int contarsalir = 0;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             contarsalir++;
-            if( contarsalir == 2 ){
+            if (contarsalir == 2) {
                 new AlertDialog.Builder(this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Salir")
@@ -312,13 +326,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .setNegativeButton(android.R.string.cancel, null)//sin listener
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {//un listener que al pulsar, cierre la aplicacion
                             @Override
-                            public void onClick(DialogInterface dialog, int which){
+                            public void onClick(DialogInterface dialog, int which) {
                                 //Salir
                                 moveTaskToBack(true);
                             }
                         })
                         .show();
-            }else if( contarsalir == 3 ){
+            } else if (contarsalir == 3) {
                 new AlertDialog.Builder(this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Cerrar sesión")
@@ -326,7 +340,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .setNegativeButton(android.R.string.cancel, null)//sin listener
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {//un listener que al pulsar, cierre la aplicacion
                             @Override
-                            public void onClick(DialogInterface dialog, int which){
+                            public void onClick(DialogInterface dialog, int which) {
                                 //Salir
                                 salirSesion();
                                 Intent intent = new Intent(MapsActivity.this, Login_users.class);
@@ -336,7 +350,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         })
                         .show();
-                contarsalir=0;
+                contarsalir = 0;
             }
             // Si el listener devuelve true, significa que el evento esta procesado, y nadie debe hacer nada mas
             return true;
@@ -365,7 +379,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         adaptador = new AdaptadorCategorias_principal(MapsActivity.this, texto, new AdaptadorCategorias_principal.Conocerposicion() {
             @Override
             public void metodoParalaposiciondelclick(int posicion) {
-
                 Toast.makeText(MapsActivity.this, "Le damos click", Toast.LENGTH_SHORT).show();
                 if (posicion == 0) {
                     Toast.makeText(MapsActivity.this, "click a la posicición: " + posicion, Toast.LENGTH_SHORT).show();
@@ -465,7 +478,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mover los botones zoom del mapa
         googleMap.setPadding(-20, 5, 0, 125);
 
-        consultaLugaresUsuario();
+        //metodo de escucha
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+            }
+        });
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+
+            }
+        });
 
         if (filtros) {
             if (banderaotro) {
@@ -517,7 +542,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } else {
                     //agregamos marcadores en el mapa ya que banderamostrar es true
                     getdirecciondetalleslongclick(latLng.latitude, latLng.longitude);
-
+                    consultaLugaresUsuario();
                 }
             }
         });
@@ -527,56 +552,111 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ProgressDialog progressDialog;
     RequestQueue requestQueue;
     JsonObjectRequest jsonObjectRequest;
+
     private void consultaLugaresUsuario() {
         SharedPreferences usario_datos = getSharedPreferences("Usuario_info", this.MODE_PRIVATE);
         int id = usario_datos.getInt("id", 0);
 
-        if( id != 0 ) {
-            requestQueue = Volley.newRequestQueue( this);
+        if (id != 0) {
+            requestQueue = Volley.newRequestQueue(this);
             progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Lugares");
             progressDialog.setMessage("Cargando lugares, por favor espere...");
             progressDialog.show();
 
-            String url = "https://d9a625248d97.ngrok.io/DB_proyecto_grado/ws_consulta_lugares.php?usuario="+id+"";
+            String url =  "https://cf9fb0c2ef16.ngrok.io/DB_proyecto_grado/ws_consulta_lugares.php?usuario=" + id + "";
             url = url.replace(" ", "%20");
 
             Log.d("url", url);
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-            requestQueue.add(jsonObjectRequest);
-        }else {
+            requestQueue.add(jsonObjectRequest); //volver a llamar esto
+        } else {
 
         }
     }
 
-    Lugar lugar =  new Lugar();
+    Lugar lugar = new Lugar();
+    Informacion_markers informacion_markers;
+    ViewPager imagenesinformacion;
+    Informacion_marker adapter;
+    int posiscion_marcador = 0;
+
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onResponse(JSONObject response) {
         progressDialog.hide();
         JSONArray jsonArray = response.optJSONArray("lugares");
         try {
-            for( int i=0; i<jsonArray.length(); i++ ) {
+            lista_lugares_usuario.clear();
+            for (int i = 0; i < jsonArray.length(); i++) {
                 Usuario usuario = new Usuario();
                 JSONObject jsonObject = null;
                 jsonObject = jsonArray.getJSONObject(i);
 
-                LatLng latLng = new LatLng( Double.parseDouble(jsonObject.getString("latitud")), Double.parseDouble(jsonObject.getString("longitud")));
-                lugar.setId(jsonObject.getInt("id"));
-                lugar.setUsuario(jsonObject.getInt("usuario"));
-                lugar.setDireccion(jsonObject.getString("direccion"));
-                lugar.setNombre_lugar(jsonObject.getString("nombre_lugar"));
-                lugar.setDescripcion_lugar(jsonObject.getString("descripcion_lugar"));
-                lugar.setTipo_lugar(jsonObject.getInt("tipo_lugar"));
-                lugar.setFecha_creacion(jsonObject.getString("fecha_creacion"));
-                lugar.setLatitud(Double.parseDouble(jsonObject.getString("latitud")));
-                lugar.setLongitud(Double.parseDouble(jsonObject.getString("longitud")));
+                LatLng latLng = new LatLng(Double.parseDouble(jsonObject.getString("latitud")), Double.parseDouble(jsonObject.getString("longitud")));
                 lugares_usuario.add(latLng);
                 mMap.addMarker(new MarkerOptions().position(latLng).title("Prueba" + i));
 
-                lista_lugares_usuario.add(lugar);
+                lista_lugares_usuario.add(new Lugar(jsonObject.getInt("id"),
+                        jsonObject.getInt("usuario"), jsonObject.getString("direccion"),
+                        jsonObject.getString("nombre_lugar"), jsonObject.getString("descripcion_lugar"),
+                        jsonObject.getInt("tipo_lugar"), jsonObject.getString("fecha_creacion"),
+                        Double.parseDouble(jsonObject.getString("latitud")), Double.parseDouble(jsonObject.getString("longitud"))));
             }
+
+            if( lugares_agregados.size() > 0 ){
+                lista_lugares_usuario.addAll(lugares_agregados);
+            }
+
+            //adapter = new Informacion_marker(lista_lugares_usuario, this);
+            adapter = new Informacion_marker(lista_lugares_usuario, this, new Informacion_marker.Conocerposicion() {
+                @Override
+                public void posisicionDelMarcador(int posicion, LatLng latLng, String direccion_lugar) {
+                    Toast.makeText(MapsActivity.this, "Son de la base de datos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivity.this, "Direccion: " + direccion_lugar, Toast.LENGTH_SHORT).show();
+                    agregarLugar(latLng, direccion_lugar);
+                }
+            });
+            imagenesinformacion = findViewById(R.id.informacion_markers);
+            imagenesinformacion.setAdapter(adapter);
+            imagenesinformacion.setPadding(5, 0, 5, 0);
+
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        /*Intent intent = new Intent(MapsActivity.this, Informacion_marker.class);
+        startActivity(intent);*/
+    }
+
+    //con este metodo lo que hacemos es cargar por medio de la interface de Informacion_marker traemos la latlng y la direccion para poder agregarlo en la base de datos
+    private void agregarLugar(final LatLng latLng, final String direccion_lugar) {
+        try {
+            final CharSequence[] items = {"Comida Saludable", "Comida intermedia", "Comida no Saludable", "Cancelar"};
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Seleccione una opción");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    switch (item) {
+                        case 0:
+                            HomendialogComidas homendialogComidas = new HomendialogComidas(latitud, longitud, direccion_lugar, 0);
+                            homendialogComidas.show(getSupportFragmentManager(), "boton comida");
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            });
+            builder.show();
+        } catch (Exception e) {
+
         }
     }
 
@@ -709,6 +789,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         longitud = location.getLongitude();
                         posicion = false;
                         getdirecciondetalles(latitud, longitud);
+                        consultaLugaresUsuario();
                     }
                 }
 
@@ -769,6 +850,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marcadorprincipal = marcador;
         pruebam.add(usermarkeroptions);
 
+        lugares_agregados.add(new Lugar(0, 0, addres, "N.A", "Ubicación por geolocalización", 0, "N.A", latitud, longitud));
+
         onMarkerClick(marcador);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(miposicion, 17);
@@ -811,7 +894,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         miposicion = new LatLng(latitud, longitud);
-        miposicion = new LatLng(latitud, longitud);
 
         usermarkeroptions.position(miposicion);
         usermarkeroptions.snippet(postalcode);
@@ -827,6 +909,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         marcadoresm.add(marcador);
         pruebam.add(usermarkeroptions);
+        lugares_agregados.add(new Lugar(0, 0, addres, "N.A", "Lugares", 0, "N.A", latitud, longitud));
+
+        //lista_lugares_usuario.add(new Lugar(0, 0, addres, knonname, "N.A", 0, "N.A", latitud, longitud));
 
         onMarkerClick(marcador);
 
@@ -841,13 +926,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
     //metodo para eliminar marcadores y mostrar la informacion de un marcador
+    /*
     @Override
     public boolean onMarkerClick(final Marker marker) {
         mMap.setInfoWindowAdapter(new Informacion_marker(LayoutInflater.from(this)));
         //mMap.setOnInfoWindowClickListener(new Informacion_marker(LayoutInflater.from(this)));
         return false;
-    }
+    }*/
 }
 
 

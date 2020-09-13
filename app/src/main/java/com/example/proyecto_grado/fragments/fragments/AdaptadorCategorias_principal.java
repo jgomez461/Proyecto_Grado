@@ -54,7 +54,6 @@ public class AdaptadorCategorias_principal extends RecyclerView.Adapter<Adaptado
         holder.textofiltro.setCompoundDrawablesWithIntrinsicBounds(listacategoria.get(position).getCategoria(), 0, 0, 0);
 
         if (seleccion[position] == false) {
-
             holder.textofiltro.setBackgroundColor(Color.WHITE);
         }else{
             holder.textofiltro.setBackgroundColor(Color.parseColor("#D31B1B"));
