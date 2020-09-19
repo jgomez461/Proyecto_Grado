@@ -58,7 +58,9 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden">
+
+        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

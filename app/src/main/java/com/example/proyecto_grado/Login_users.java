@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.proyecto_grado.Clases.VariablesGlobales;
 import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.entidades.Usuario;
 
@@ -127,6 +128,8 @@ public class Login_users extends AppCompatActivity implements Response.Listener<
 
     }
 
+    VariablesGlobales variablesGlobales = new VariablesGlobales();
+
     private void loginUser() {
         if( codigo.getText().length() > 0 && clave.getText().length() > 0 ){
             progressDialog = new ProgressDialog(this);
@@ -134,7 +137,8 @@ public class Login_users extends AppCompatActivity implements Response.Listener<
             progressDialog.setMessage("Verificando datos...");
             progressDialog.show();
 
-            String url = "https://cf9fb0c2ef16.ngrok.io/DB_proyecto_grado/ws_consulta_usuario.php?usuario="+
+            String variablesDB = variablesGlobales.getUrl_DB();
+            String url = variablesDB + "ws_consulta_usuario.php?usuario="+
                     codigo.getText().toString() +"&codigo_acceso="+
                     codigo.getText().toString() +"&clave="+
                     clave.getText().toString()+"";

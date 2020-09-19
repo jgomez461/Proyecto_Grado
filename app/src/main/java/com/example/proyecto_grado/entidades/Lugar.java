@@ -5,6 +5,7 @@ import java.util.Date;
 public class Lugar {
 
     private int id;
+    private String codigo;
     private int usuario;
     private String direccion;
     private String nombre_lugar;
@@ -14,8 +15,9 @@ public class Lugar {
     private double latitud;
     private double longitud;
 
-    public Lugar(int id, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, String fecha_creacion, double latitud, double longitud) {
+    public Lugar(int id, String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, String fecha_creacion, double latitud, double longitud) {
         this.id = id;
+        this.codigo = codigo;
         this.usuario = usuario;
         this.direccion = direccion;
         this.nombre_lugar = nombre_lugar;
@@ -35,6 +37,14 @@ public class Lugar {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public int getUsuario() {

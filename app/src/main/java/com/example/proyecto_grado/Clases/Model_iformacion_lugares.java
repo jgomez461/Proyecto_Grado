@@ -1,5 +1,9 @@
 package com.example.proyecto_grado.Clases;
 
+import android.content.Context;
+
+import androidx.appcompat.app.AlertDialog;
+
 public class Model_iformacion_lugares {
 
     private int imagen;
@@ -35,4 +39,5 @@ public class Model_iformacion_lugares {
     public void setContenido(int contenido) {
         this.contenido = contenido;
     }
+
 }

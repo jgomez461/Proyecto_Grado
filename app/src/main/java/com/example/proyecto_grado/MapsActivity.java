@@ -82,8 +82,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
@@ -141,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean ba = false;
     private ArrayList<LatLng> lugares_usuario = new ArrayList<>();
     private List<Lugar> lista_lugares_usuario = new ArrayList<>();
-    private  List<Lugar> lugares_agregados = new ArrayList<>();
+    private final List<Lugar> lugares_agregados = new ArrayList<>();
 
     //bandera para dejar solo el mapa
     private boolean banderamostrar = false;
@@ -154,6 +156,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //filtro desde el mapa
     RecyclerView recyclerView;
     SliderPageAdapter_Comidas viewPager_comidas;
+    //Declare HashMap to store mapping of marker to Activity
+    HashMap<String, String> mMarkers = new HashMap<String, String>();
+
+    Lugar lugar = new Lugar();
+    Informacion_markers informacion_markers;
+    ViewPager imagenesinformacion;
+    Informacion_marker adapter;
+    int posiscion_marcador = 0;
+    String codigo_marcador = "";
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -165,7 +176,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
         mtypebutton = (ImageButton) findViewById(R.id.btnsatelite);
         buscardireccionn = (EditText) findViewById(R.id.location);
         lupabuscar = (ImageButton) findViewById(R.id.buscardireccion);
@@ -174,6 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerView = findViewById(R.id.filtrosrecycler);
         cambioidioma = (ImageButton) findViewById(R.id.cambioidioma);
         textocambiaidioma = (TextView) findViewById(R.id.textoidioma);
+        imagenesinformacion = (ViewPager) findViewById(R.id.informacion_markers);
 
         deletemarker.setVisibility(View.INVISIBLE);
         int posicion = 6;
@@ -249,6 +260,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        buscardireccionn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imagenesinformacion.setVisibility(View.INVISIBLE);
+            }
+        });
+
         //con este metodo mostramos un barra despegable
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -274,7 +292,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mtypebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (banderatipo == true) {
+                if (banderatipo) {
                     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                     buscardireccionn.setBackgroundResource(R.drawable.estilo_bordes_editext);
                     lupabuscar.setImageResource(R.drawable.buscar);
@@ -302,6 +320,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Mispermisos();
 
     }
+
+    VariablesGlobales variablesGlobales = new VariablesGlobales();
 
     private void Mispermisos() {
         if (validarpermisos()) {
@@ -379,17 +399,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         adaptador = new AdaptadorCategorias_principal(MapsActivity.this, texto, new AdaptadorCategorias_principal.Conocerposicion() {
             @Override
             public void metodoParalaposiciondelclick(int posicion) {
-                Toast.makeText(MapsActivity.this, "Le damos click", Toast.LENGTH_SHORT).show();
-                if (posicion == 0) {
-                    Toast.makeText(MapsActivity.this, "click a la posicición: " + posicion, Toast.LENGTH_SHORT).show();
-                    filtros = false;
-                    recyclerView.setVisibility(View.GONE);
-                    if (mMap != null) {
-                        mMap.clear();
-                    }
-                } else {
-                    Toast.makeText(MapsActivity.this, "Nel", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapsActivity.this, "Le damos click", Toast.LENGTH_SHORT).show();
+            if (posicion == 0) {
+                Toast.makeText(MapsActivity.this, "click a la posicición: " + posicion, Toast.LENGTH_SHORT).show();
+                filtros = false;
+                recyclerView.setVisibility(View.GONE);
+                if (mMap != null) {
+                    mMap.clear();
                 }
+            } else {
+                Toast.makeText(MapsActivity.this, "Nel", Toast.LENGTH_SHORT).show();
+            }
             }
         }, posicion);
         recyclerView.setAdapter(adaptador);
@@ -412,12 +432,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Geocoder geocoder = new Geocoder(this);
                     boolean bander = false;
                     try {
-                        listadireccion = geocoder.getFromLocationName(direccion, 6);
+                        listadireccion = geocoder.getFromLocationName(direccion, 1);
 
                         if (listadireccion != null) {
-
                             for (int i = 0; i < listadireccion.size(); i++) {
-
                                 bander = true;
                                 Address useradres = listadireccion.get(i);
                                 LatLng latilog = new LatLng(useradres.getLatitude(), useradres.getLongitude());
@@ -425,36 +443,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 usermarkeroptions.title(direccion);
                                 usermarkeroptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
 
-                                final Marker marcador = mMap.addMarker(new MarkerOptions().position(latilog).title(direccion).
-                                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-
-                                marcadoresm.add(marcador);
-                                mMap.setOnMarkerClickListener(MapsActivity.this);
-                                pruebam.add(usermarkeroptions);
-
-                                onMarkerClick(marcador);
-
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latilog, 20));
-                                CameraPosition cameraPosition = CameraPosition.builder()
-                                        .target(latilog)
-                                        .zoom(16.0f)
-                                        .tilt(45.0f)
-                                        .bearing(45.0f)
-                                        .build();
-                                Toast.makeText(this, "Has creado un marcador", Toast.LENGTH_SHORT).show();
-
-            /*Por último se invoca al método encargado de actualizar el movimiento de la cámara y
-            el tiempo de duración para actualizar dicho movimiento.*/
-                                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 2000, null);
-
+                                lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, direccion, "N.A", "Ubicación por agregar", 0, "N.A", useradres.getLatitude(), useradres.getLongitude()));
+                                consultaLugaresUsuario();
                             }
 
-                            if (bander == false) {
-                                Toast.makeText(this, "Direccióm no encontrada", Toast.LENGTH_SHORT).show();
+                            if (!bander) {
+                                Toast.makeText(this, "Dirección no encontrada", Toast.LENGTH_SHORT).show();
                             }
 
                         } else {
-                            Toast.makeText(this, "Direccióm no encontrada", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Dirección no encontrada", Toast.LENGTH_SHORT).show();
                         }
 
                     } catch (IOException e) {
@@ -477,20 +475,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMapToolbarEnabled(false);
         //mover los botones zoom del mapa
         googleMap.setPadding(-20, 5, 0, 125);
-
-        //metodo de escucha
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-
-            }
-        });
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-
-            }
-        });
 
         if (filtros) {
             if (banderaotro) {
@@ -564,7 +548,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             progressDialog.setMessage("Cargando lugares, por favor espere...");
             progressDialog.show();
 
-            String url =  "https://cf9fb0c2ef16.ngrok.io/DB_proyecto_grado/ws_consulta_lugares.php?usuario=" + id + "";
+            String variablesDB = variablesGlobales.getUrl_DB();
+            String url = variablesDB + "ws_consulta_lugares.php?usuario=" + id + "";
             url = url.replace(" ", "%20");
 
             Log.d("url", url);
@@ -574,12 +559,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
     }
-
-    Lugar lugar = new Lugar();
-    Informacion_markers informacion_markers;
-    ViewPager imagenesinformacion;
-    Informacion_marker adapter;
-    int posiscion_marcador = 0;
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -594,34 +573,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 JSONObject jsonObject = null;
                 jsonObject = jsonArray.getJSONObject(i);
 
-                LatLng latLng = new LatLng(Double.parseDouble(jsonObject.getString("latitud")), Double.parseDouble(jsonObject.getString("longitud")));
-                lugares_usuario.add(latLng);
-                mMap.addMarker(new MarkerOptions().position(latLng).title("Prueba" + i));
-
-                lista_lugares_usuario.add(new Lugar(jsonObject.getInt("id"),
+                lista_lugares_usuario.add(new Lugar(jsonObject.getInt("id"), jsonObject.getString("codigo"),
                         jsonObject.getInt("usuario"), jsonObject.getString("direccion"),
                         jsonObject.getString("nombre_lugar"), jsonObject.getString("descripcion_lugar"),
                         jsonObject.getInt("tipo_lugar"), jsonObject.getString("fecha_creacion"),
                         Double.parseDouble(jsonObject.getString("latitud")), Double.parseDouble(jsonObject.getString("longitud"))));
             }
-
             if( lugares_agregados.size() > 0 ){
                 lista_lugares_usuario.addAll(lugares_agregados);
+                pintarLugares(lista_lugares_usuario);
+            }else{
+                pintarLugares(lista_lugares_usuario);
             }
 
-            //adapter = new Informacion_marker(lista_lugares_usuario, this);
-            adapter = new Informacion_marker(lista_lugares_usuario, this, new Informacion_marker.Conocerposicion() {
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
-                public void posisicionDelMarcador(int posicion, LatLng latLng, String direccion_lugar) {
-                    Toast.makeText(MapsActivity.this, "Son de la base de datos", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(MapsActivity.this, "Direccion: " + direccion_lugar, Toast.LENGTH_SHORT).show();
-                    agregarLugar(latLng, direccion_lugar);
+                public void onInfoWindowClick(Marker marker) {
+                    String actionId = mMarkers.get(marker.getId());
+                    for (int i=0; i<lista_lugares_usuario.size(); i++){
+                        String codigo = lista_lugares_usuario.get(i).getCodigo();
+                        if(codigo.equals(actionId)){
+                            posiscion_marcador = i;
+                            codigo_marcador = codigo;
+                            cargarVistasMarcadores(posiscion_marcador);
+                            break;
+                        }
+                    }
                 }
             });
-            imagenesinformacion = findViewById(R.id.informacion_markers);
-            imagenesinformacion.setAdapter(adapter);
-            imagenesinformacion.setPadding(5, 0, 5, 0);
 
+            //adapter = new Informacion_marker(lista_lugares_usuario, this);
+            adapter = new Informacion_marker( lista_lugares_usuario, this, new Informacion_marker.Conocerposicion() {
+                @Override
+                public void posisicionDelMarcador(String codigo_marcador, int id, LatLng latLng, String direccion_lugar, int codigo_accion) {
+
+                    if( codigo_accion == 1 ){
+                        mostrarInformacion(lista_lugares_usuario, codigo_marcador);
+                    }else if( codigo_accion == 2 ){
+                        Toast.makeText(MapsActivity.this, "si se agrega..." + codigo_marcador, Toast.LENGTH_SHORT).show();
+                        agregarLugar(latLng, direccion_lugar, codigo_marcador);
+                    }
+                }
+            });
+            cargarVistasMarcadores(posiscion_marcador);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -630,8 +624,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);*/
     }
 
+    private void cargarVistasMarcadores(int posiscion_marcador) {
+        imagenesinformacion.setVisibility(View.VISIBLE);
+        imagenesinformacion.setAdapter(adapter);
+        imagenesinformacion.setPadding(5, 0, 5, 0);
+        imagenesinformacion.setCurrentItem( posiscion_marcador );
+    }
+
+    private void mostrarInformacion(List<Lugar> lista_lugares_usuario, String codigo) {
+        for( int i=0; i<lista_lugares_usuario.size(); i++ ){
+            if( codigo == lista_lugares_usuario.get(i).getCodigo() ){
+                LatLng latLng = new LatLng(lista_lugares_usuario.get(i).getLatitud(), lista_lugares_usuario.get(i).getLongitud());
+                final Marker marcador = mMap.addMarker(new MarkerOptions().position(latLng));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                mMap.animateCamera(cameraUpdate);
+            }
+        }
+    }
+
+    private void pintarLugares(List<Lugar> lista_lugares_usuario) {
+        for (int i=0; i<lista_lugares_usuario.size(); i++ ){
+            LatLng latLng = new LatLng(lista_lugares_usuario.get(i).getLatitud(), lista_lugares_usuario.get(i).getLongitud());
+            Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title("marker: " + lista_lugares_usuario.get(i).getDireccion()));
+            String id_marker = marker.getId();
+            mMarkers.put( id_marker , lista_lugares_usuario.get(i).getCodigo());
+
+        }
+    }
+
+    HomendialogComidas homendialog = new HomendialogComidas();
     //con este metodo lo que hacemos es cargar por medio de la interface de Informacion_marker traemos la latlng y la direccion para poder agregarlo en la base de datos
-    private void agregarLugar(final LatLng latLng, final String direccion_lugar) {
+    private void agregarLugar(final LatLng latLng, final String direccion_lugar, final String posicion) {
         try {
             final CharSequence[] items = {"Comida Saludable", "Comida intermedia", "Comida no Saludable", "Cancelar"};
 
@@ -639,19 +662,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             builder.setTitle("Seleccione una opción");
             builder.setItems(items, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    switch (item) {
-                        case 0:
-                            HomendialogComidas homendialogComidas = new HomendialogComidas(latitud, longitud, direccion_lugar, 0);
-                            homendialogComidas.show(getSupportFragmentManager(), "boton comida");
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            break;
-                        case 3:
-                            dialog.dismiss();
-                            break;
-                    }
+                switch (item) {
+                    case 0:
+                        homendialog = new HomendialogComidas(latLng.latitude, latLng.longitude, direccion_lugar, 0, posicion);
+                        homendialog.show(getSupportFragmentManager(), "boton comida");
+                        break;
+                    case 1:
+                        homendialog = new HomendialogComidas(latLng.latitude, latLng.longitude, direccion_lugar, 1, posicion);
+                        homendialog.show(getSupportFragmentManager(), "boton comida");
+                        break;
+                    case 2:
+                        homendialog = new HomendialogComidas(latLng.latitude, latLng.longitude, direccion_lugar, 2, posicion);
+                        homendialog.show(getSupportFragmentManager(), "boton comida");
+                        break;
+                    case 3:
+                        dialog.dismiss();
+                        break;
+                }
                 }
             });
             builder.show();
@@ -712,22 +739,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         alertaopciones.setItems(opciones, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int i) {
-
-                try {
-                    if (opciones[i].equals("si")) {
-                        Intent intentar = new Intent();
-                        intentar.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        Uri uri = Uri.fromParts("package:", getPackageName(), null);
-                        //intentar.setData(uri.parse("package: "+ ContactsContract.Directory.PACKAGE_NAME));
-                        intentar.setData(uri);
-                        startActivity(intentar);
-                    } else {
-                        Toast.makeText(MapsActivity.this, "los permisos no fueron aceptados", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(MapsActivity.this, "No se pudo acceder a la configuración", Toast.LENGTH_SHORT).show();
+            try {
+                if (opciones[i].equals("si")) {
+                    Intent intentar = new Intent();
+                    intentar.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    Uri uri = Uri.fromParts("package:", getPackageName(), null);
+                    //intentar.setData(uri.parse("package: "+ ContactsContract.Directory.PACKAGE_NAME));
+                    intentar.setData(uri);
+                    startActivity(intentar);
+                } else {
+                    Toast.makeText(MapsActivity.this, "los permisos no fueron aceptados", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 }
+            } catch (Exception e) {
+                Toast.makeText(MapsActivity.this, "No se pudo acceder a la configuración", Toast.LENGTH_SHORT).show();
+            }
             }
         });
         alertaopciones.show();
@@ -755,8 +781,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void mostrarmiubicacion() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION)) {
             } else {
@@ -772,8 +796,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         1);
             }
-
-
             return;
         }
 
@@ -840,23 +862,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         usermarkeroptions.snippet(city + " - " + country + " - " + state);
         usermarkeroptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ubicacion));
 
-        final Marker marcador = mMap.addMarker(new MarkerOptions().
-                position(miposicion).
-                title(addres).
-                snippet(postalcode).
-                icon(BitmapDescriptorFactory.fromResource(R.drawable.ubicacion)));
-
-        marcadoresm.add(marcador);
-        marcadorprincipal = marcador;
-        pruebam.add(usermarkeroptions);
-
-        lugares_agregados.add(new Lugar(0, 0, addres, "N.A", "Ubicación por geolocalización", 0, "N.A", latitud, longitud));
-
-        onMarkerClick(marcador);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(miposicion, 17);
-        mMap.animateCamera(cameraUpdate);
-
+        lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, addres, "N.A", "Ubicación por geolocalización", 0, "N.A", latitud, longitud));
     }
 
     //prueba para agregar marcadores en un click largo
@@ -903,13 +909,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*mMap.addMarker(new MarkerOptions().position(miposicion).title(addres)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marcadordeposicion)).anchor(0.0f, 1.0f));*/
 
+        lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, addres, "N.A", "Lugares", 0, "N.A", latitud, longitud));
+/*
         final Marker marcador = mMap.addMarker(new MarkerOptions().position(miposicion).title(addres).
                 snippet(postalcode).
                 icon(BitmapDescriptorFactory.fromResource(R.drawable.marcadordeposicion)).anchor(0.0f, 1.0f));
 
         marcadoresm.add(marcador);
         pruebam.add(usermarkeroptions);
-        lugares_agregados.add(new Lugar(0, 0, addres, "N.A", "Lugares", 0, "N.A", latitud, longitud));
 
         //lista_lugares_usuario.add(new Lugar(0, 0, addres, knonname, "N.A", 0, "N.A", latitud, longitud));
 
@@ -920,7 +927,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 deletemarker.setVisibility(View.INVISIBLE);
             }
-        });
+        });*/
 
         //Toast.makeText(this, "Has creado un marcador", Toast.LENGTH_SHORT).show();
 

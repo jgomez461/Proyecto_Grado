@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -37,7 +39,7 @@ public class Informacion_marker extends PagerAdapter {
     Informacion_marker.Conocerposicion miposicion; //interface
     int posicion;
 
-    public Informacion_marker(List<Lugar> informacion_lugares, Context context, Informacion_marker.Conocerposicion miposicion) {
+    public Informacion_marker( List<Lugar> informacion_lugares, Context context, Informacion_marker.Conocerposicion miposicion) {
         this.informacion_lugares = informacion_lugares;
         this.context = context;
         this.miposicion = miposicion;
@@ -52,8 +54,6 @@ public class Informacion_marker extends PagerAdapter {
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view.equals(object);
     }
-
-
 
     @NonNull
     @Override
@@ -72,7 +72,7 @@ public class Informacion_marker extends PagerAdapter {
         agregar = (Button) view.findViewById(R.id.agregar);
 
         nombre_lugar.setText(informacion_lugares.get(position).getNombre_lugar());
-        direccion_lugar.setText(informacion_lugares.get(position).getDireccion() + " - " + "Ciclo rutas");
+        direccion_lugar.setText(informacion_lugares.get(position).getDireccion());
         descripcion_lugar.setText(informacion_lugares.get(position).getDescripcion_lugar());
         final LatLng latLng = new LatLng(informacion_lugares.get(position).getLatitud(), informacion_lugares.get(position).getLongitud());
 
@@ -82,12 +82,20 @@ public class Informacion_marker extends PagerAdapter {
             agregar.setVisibility(View.VISIBLE);
         }
 
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                miposicion.posisicionDelMarcador(informacion_lugares.get(position).getCodigo(), informacion_lugares.get(position).getId(), latLng, direccion_lugar.getText().toString(), 1);
+                notifyDataSetChanged();
+                return true;
+            }
+        });
+
         agregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                miposicion.posisicionDelMarcador(position, latLng, direccion_lugar.getText().toString());
-                posicion = position;
-                notifyDataSetChanged();
+            miposicion.posisicionDelMarcador(informacion_lugares.get(position).getCodigo(), informacion_lugares.get(position).getId(), latLng, direccion_lugar.getText().toString(), 2);
+            notifyDataSetChanged();
             }
         });
 
@@ -109,6 +117,6 @@ public class Informacion_marker extends PagerAdapter {
     }
 
     public interface Conocerposicion {
-        void posisicionDelMarcador(int posicion, LatLng latLng, String direccion_lugar);
+        void posisicionDelMarcador(String posicion, int id, LatLng latLng, String direccion_lugar, int codigo_accion);
     }
 }

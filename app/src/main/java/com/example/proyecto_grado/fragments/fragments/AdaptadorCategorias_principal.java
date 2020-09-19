@@ -36,8 +36,6 @@ public class AdaptadorCategorias_principal extends RecyclerView.Adapter<Adaptado
     ArrayList<Integer> listaiconos = new ArrayList<>();
     boolean[] seleccion = new boolean[5];
 
-
-
     @NonNull
     @Override
     public AdaptadorCategorias_principal.CategoriaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,7 +46,6 @@ public class AdaptadorCategorias_principal extends RecyclerView.Adapter<Adaptado
     @Override
     public void onBindViewHolder(@NonNull final AdaptadorCategorias_principal.CategoriaViewHolder holder, final int position) {
         holder.textofiltro.setText(listacategoria.get(position).getMnames());
-
         seleccion[posicion] = true;
 
         holder.textofiltro.setCompoundDrawablesWithIntrinsicBounds(listacategoria.get(position).getCategoria(), 0, 0, 0);

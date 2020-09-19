@@ -33,11 +33,9 @@ public class Homedialogo_Deportivo extends BottomSheetDialogFragment{
         //View v = inflater.inflate(R.layout.boton_comida, container, false);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.boton_deportivo, null);
 
-
-
         List<Fragment> list = new ArrayList<>();
-        list.add(new PageFragment_deporteprivado());
         list.add(new PageFragment_deportepublico());
+        list.add(new PageFragment_deporteprivado());
 
         pager = (ViewPager) view.findViewById(R.id.viewpagerdeporte);
         pagerAdapter = new SliderPageAdapter_deporte(getChildFragmentManager(), list);
@@ -50,9 +48,7 @@ public class Homedialogo_Deportivo extends BottomSheetDialogFragment{
     }
 
     private void setupTablayout(){
-
-        tabss.getTabAt(0).setIcon(R.drawable.icono_comidanosaludable);
-        tabss.getTabAt(1).setIcon(R.drawable.icono_comidasaludable);
-
+        tabss.getTabAt(0).setIcon(R.drawable.icono_deporte_publico);
+        tabss.getTabAt(1).setIcon(R.drawable.icono_deporte_privado);
     }
 }

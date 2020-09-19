@@ -25,15 +25,16 @@ public class SliderPageAdapter_deporte extends FragmentStatePagerAdapter {
         return fragmentList.size();
     }
 
+    /*
     @Override
     public CharSequence getPageTitle(int position) {
 
-        /*String iconos = String.valueOf(icons[position]);
+        String iconos = String.valueOf(icons[position]);
         SpannableStringBuilder ss = new SpannableStringBuilder(iconos);
 
         ss.setSpan(fonte, 0, ss.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         ss.setSpan(new RelativeSizeSpan(1.5f), 0, ss.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        return ss;*/
+        return ss;
 
         switch (position) {
             case 0:
@@ -43,7 +44,5 @@ public class SliderPageAdapter_deporte extends FragmentStatePagerAdapter {
 
         }
         return "";
-
-
-    }
+    }*/
 }

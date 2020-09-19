@@ -1,13 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/expanded_ci"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorgrisclaro"
+    app:behavior_peekHeight="60dp"
+    android:orientation="vertical"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <TextView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="este es la pagina de comida intermedia"
-        />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/coloWgite"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:text="@string/comida_intermedia"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colornaranjaosucro"
+                    android:textSize="15dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/recyclerinformacion_ci"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_centerInParent="true"
+                        android:clipToPadding="false"
+                        android:foregroundGravity="center"
+                        android:overScrollMode="never">
+
+                    </androidx.viewpager.widget.ViewPager>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@color/coloWgite"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/agregar_lugar"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colornaranjaosucro"
+                    android:textSize="15dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/bordelinearlayout"
+                    android:orientation="vertical">
 
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="27dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="@string/nombre_lugar"
+                            android:textColor="@color/colornegro" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="#131313"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="35"
+                            app:counterOverflowTextAppearance="@style/CounterOverFlow"
+                            app:hintEnabled="false">
+
+                            <EditText
+                                android:id="@+id/nombre_lugar_c_ci"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:background="@drawable/estiloedittextformcomidas"
+                                android:drawableLeft="@drawable/nombre_luga"
+                                android:hint="@string/nombre_lugar"
+                                android:inputType="textMultiLine" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/direccion_ci"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="27dp"
+                                android:layout_marginBottom="2dp"
+                                android:text="@string/direccion_marcador"
+                                android:textColor="@color/colornegro" />
+
+                            <ImageButton
+                                android:id="@+id/btn_buscar_direccion_ci"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/settings_changes_address"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="#131313"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="80"
+                            app:counterOverflowTextAppearance="@style/CounterOverFlow"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <EditText
+                                android:id="@+id/direccion_lugar_ci"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:enabled="false"
+                                android:background="@drawable/estiloedittextformcomidas"
+                                android:drawableLeft="@drawable/edit_location_marker"
+                                android:hint="@string/direccion_marcador"
+                                android:textColor="@color/colornegro"
+                                android:inputType="textMultiLine"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/titulodescripcion_ci"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="27dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="@string/descripcion_lugar"
+                            android:textColor="@color/colornegro" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="#131313"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="120"
+                            app:counterOverflowTextAppearance="@style/CounterOverFlow"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+
+
+                            <EditText
+                                android:id="@+id/textodescripcion_ci"
+                                android:layout_width="match_parent"
+                                android:layout_height="80dp"
+                                android:background="@drawable/estiloedittextformcomidas"
+                                android:drawableLeft="@drawable/descripcion_contenido"
+                                android:gravity="top"
+                                android:hint="@string/descripcion_lugar"
+                                android:textColor="@color/colornegro" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyvlerimagenes_ci"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp">
+
+                    <Button
+                        android:id="@+id/cargarimagen_ci"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:background="@drawable/round"
+                        android:drawableLeft="@drawable/cargar_imagen"
+                        android:paddingLeft="5.0dp"
+                        android:paddingTop="1.5dp"
+                        android:layout_marginLeft="4.0dp"
+                        android:paddingRight="5.5dp"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/add_location_ci"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/round"
+                        android:baselineAligned="false"
+                        android:drawableRight="@drawable/add_location"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="@string/continuar"
+                        android:textColor="@color/coloWgite"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
+

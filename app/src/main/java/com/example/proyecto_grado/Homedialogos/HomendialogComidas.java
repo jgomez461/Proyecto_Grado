@@ -31,12 +31,14 @@ public class HomendialogComidas extends BottomSheetDialogFragment {
     private double longitud;
     private String direccion_lugar;
     private int posicion = 5;
+    private String codigo;
 
-    public HomendialogComidas(double latitud, double longitud, String direccion_lugar, int posicion) {
+    public HomendialogComidas(double latitud, double longitud, String direccion_lugar, int posicion, String codigo) {
         this.latitud = latitud;
         this.longitud = longitud;
         this.direccion_lugar = direccion_lugar;
         this.posicion = posicion;
+        this.codigo = codigo;
     }
 
     public HomendialogComidas() {
@@ -49,17 +51,17 @@ public class HomendialogComidas extends BottomSheetDialogFragment {
 
         List<Fragment> list = new ArrayList<>();
         if( posicion == 0 ){
-            list.add(new PageFragment_comidasaludable(latitud, longitud, direccion_lugar));
+            list.add(new PageFragment_comidasaludable(latitud, longitud, direccion_lugar, codigo));
             list.add(new PageFragment_comidaintermedia());
             list.add(new PageFragment_comidanosaludable());
         }else if( posicion == 1 ){
-            list.add(new PageFragment_comidaintermedia());
-            list.add(new PageFragment_comidaintermedia());
+            list.add(new PageFragment_comidasaludable());
+            list.add(new PageFragment_comidaintermedia(latitud, longitud, direccion_lugar, codigo));
             list.add(new PageFragment_comidanosaludable());
         }else if( posicion == 2 ){
             list.add(new PageFragment_comidanosaludable());
             list.add(new PageFragment_comidaintermedia());
-            list.add(new PageFragment_comidanosaludable());
+            list.add(new PageFragment_comidanosaludable(latitud, longitud, direccion_lugar, codigo));
         }else{
             list.add(new PageFragment_comidasaludable());
             list.add(new PageFragment_comidaintermedia());

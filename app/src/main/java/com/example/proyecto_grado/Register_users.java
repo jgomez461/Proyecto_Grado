@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.proyecto_grado.Clases.VariablesGlobales;
 import com.example.proyecto_grado.entidades.Usuario;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -101,6 +102,7 @@ public class Register_users extends AppCompatActivity implements Response.Listen
         return number;
     }
 
+    VariablesGlobales variablesGlobales = new VariablesGlobales();
     private void cargarWebService() {
         progressDialog = new ProgressDialog(this);
 
@@ -108,7 +110,9 @@ public class Register_users extends AppCompatActivity implements Response.Listen
 
             progressDialog.setMessage("Cargando, por favor espere...");
             progressDialog.show();
-            String url = "https://cf9fb0c2ef16.ngrok.io/DB_proyecto_grado/ws_registro_user.php?nombre="+
+
+            String variablesDB = variablesGlobales.getUrl_DB();
+            String url = variablesDB + "DB_proyecto_grado/ws_registro_user.php?nombre="+
                     nombre.getText().toString()+
                     "&usuario="+usuario.getText().toString()+
                     "&codigo_acceso="+codigo_acceso.getText().toString()

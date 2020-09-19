@@ -1,49 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:id="@+id/botonsheet"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+app:layout_behavior="@string/bottom_sheet_behavior"
     >
 
-    <LinearLayout
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:background="#05FFFFFF"
         >
 
-        <com.google.android.material.appbar.AppBarLayout
+
+        <ImageView
+            android:id="@+id/linea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/flecha_hacia_arriba"/>
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabsdeportivo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ffff">
+            app:tabBackground="@drawable/ripple_tab"
+            app:tabRippleColor="@color/colornaranjaosucro"
+            android:outlineSpotShadowColor="@color/colornaranjaosucro"
+            app:tabSelectedTextColor="@color/colornaranjaosucro"
+            app:tabIndicatorColor="@color/colornaranjaosucro"
+            app:tabTextColor="@color/colornegro"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <ImageView
-                android:id="@+id/linea"
-                android:layout_width="match_parent"
-                android:layout_height="22dp"
-                android:tag="1"
-                android:layout_gravity="center"
-                android:src="@drawable/cambioiconobotonhomecomida"/>
-
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabsdeportivo"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#FDF7F7" />
-
-        </com.google.android.material.appbar.AppBarLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpagerdeporte"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    </androidx.viewpager.widget.ViewPager>
 
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpagerdeporte"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-
-        </androidx.viewpager.widget.ViewPager>
-
-    </LinearLayout>
-
+</LinearLayout>
 </FrameLayout>
