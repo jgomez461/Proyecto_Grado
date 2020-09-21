@@ -17,6 +17,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,18 +42,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.proyecto_grado.Clases.Model_iformacion_lugares;
-import com.example.proyecto_grado.Clases.VariablesGlobales;
+import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.example.proyecto_grado.MapsActivity;
 import com.example.proyecto_grado.R;
-import com.example.proyecto_grado.complementos.FiltrosMarcadores_Mapsactivity_principal;
 import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
-import com.example.proyecto_grado.entidades.Lugar;
 import com.example.proyecto_grado.entidades.TipoDeporte;
-import com.example.proyecto_grado.entidades.Usuario;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,11 +67,15 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
     private EditText textodescripcion;
     private EditText nombre_lugar;
     private EditText direccion_marker;
+    private EditText nombre_tipo_deporte_agregar;
     private Button añadirimagen;
     private Button agregar_lugar;
     private ImageButton btn_buscar_direccion;
+    private ImageButton agregar_tipo_deporte;
     private RecyclerView tipos_deporte;
     private ImageView imagenes;
+    private LinearLayout ly_lista_deportes;
+    private LinearLayout ly_agregar_tipo_deporte;
     private ImageButton rotarderecha;
     private ImageButton rotarizquierda;
     private ImageButton restaurar;
@@ -99,10 +99,13 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
     private String codigo;
 
     private boolean bandera = false;
+    private boolean bandera_guardado = false;
+    private boolean bandera_nombre_tipo_deporte = false;
+    private int dato_id_lugar =  0;
 
     ViewPager viewPager;
     Adaptador_informacion_lugares adapter;
-    List<Model_iformacion_lugares> model_iformacion_lugares;
+    List<VariablesGlobales.Model_iformacion_lugares> model_iformacion_lugares;
     List<TipoDeporte> lista_tipos_deporte_publico = new ArrayList<>();
 
     PhotoViewAttacher photoViewAttacher;
@@ -131,13 +134,16 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.deporte_publico, container, false);
 
-
         textodescripcion = viewGroup.findViewById(R.id.textodescripcion_dp);
         nombre_lugar = viewGroup.findViewById(R.id.nombre_lugar_dp);
         direccion_marker = viewGroup.findViewById(R.id.direccion_lugar_dp);
         btn_buscar_direccion = viewGroup.findViewById(R.id.btn_buscar_direccion);
         agregar_lugar = viewGroup.findViewById(R.id.add_location_dp);
         tipos_deporte = viewGroup.findViewById(R.id.lista_tipos_deporte);
+        agregar_tipo_deporte = viewGroup.findViewById(R.id.agregar_tipo_deporte);
+        ly_lista_deportes = viewGroup.findViewById(R.id.lista_tipos_deporte_seleccion);
+        ly_agregar_tipo_deporte = viewGroup.findViewById(R.id.contenido_agregar_tipo_deporte);
+        nombre_tipo_deporte_agregar = viewGroup.findViewById(R.id.nombre_tipo_deporte);
 
         if( direccion_lugar != null ){
             direccion_marker.setText(direccion_lugar);
@@ -145,9 +151,9 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
 
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_deporte_publico_1, R.string.titulo_1, R.string.informacion_imges_comida_01));
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_deporte_publico_2, R.string.titulo_2, R.string.informacion_imges_comida_02));
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_deporte_publico_3, R.string.titulo_3, R.string.informacion_imges_comida_03));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_publico_1, R.string.titulo_dp_1, R.string.informacion_dp_01));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_publico_2, R.string.titulo_dp_2, R.string.informacion_dp_02));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_publico_3, R.string.titulo_dp_3, R.string.informacion_dp_03));
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
@@ -175,8 +181,27 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
         agregar_lugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d( "ELEMENTOS", lista_tipo_deporte_guardar.size()+"" );
-                validacionInformacion();
+            Log.d( "ELEMENTOS", lista_tipo_deporte_guardar.size()+"" );
+            validacionInformacion();
+            }
+        });
+
+        nombre_tipo_deporte_agregar.setOnTouchListener(new View.OnTouchListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+            if(event.getAction() == MotionEvent.ACTION_UP) {
+                if(nombre_tipo_deporte_agregar.getCompoundDrawables()[2]!=null){
+                    if(event.getX() >= (nombre_tipo_deporte_agregar.getRight()- nombre_tipo_deporte_agregar.getLeft() - nombre_tipo_deporte_agregar.getCompoundDrawables()[2].getBounds().width())) {
+                        ly_lista_deportes.setVisibility(View.VISIBLE);
+                        ly_agregar_tipo_deporte.setVisibility(View.GONE);
+                        nombre_tipo_deporte_agregar.setText("");
+                        cargarListaTiposDeporte();
+                    }
+                }
+            }
+            return false;
             }
         });
 
@@ -188,8 +213,16 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
             recylcerimagenes.setVisibility(View.VISIBLE);
         }
 
-        cargarListaTiposDeporte();
+        agregar_tipo_deporte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            ly_lista_deportes.setVisibility(View.GONE);
+            lista_tipos_deporte_publico.clear();
+            ly_agregar_tipo_deporte.setVisibility(View.VISIBLE);
+            }
+        });
 
+        cargarListaTiposDeporte();
         return viewGroup;
     }
 
@@ -197,7 +230,6 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage(R.string.tipos_de_deporte+"");
         progressDialog.show();
-
         String url = variablesGlobales.getUrl_DB() + "ws_consulta_tipos_deporte.php?tipo="+ 4 +" ";
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         Log.d("URL", url);
@@ -205,21 +237,22 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
     }
 
     private void validacionInformacion() {
-        if( nombre_lugar.getText().toString().length() > 0 && textodescripcion.getText().toString().length() > 0 && direccion_marker.getText().toString().length() > 0 ){
-            Toast.makeText(getContext(), "SI", Toast.LENGTH_SHORT).show();
+        if( nombre_lugar.getText().toString().length() > 0 && textodescripcion.getText().toString().length() > 0 && direccion_marker.getText().toString().length() > 0 &&
+            ( lista_tipo_deporte_guardar.size() > 0 ||  nombre_tipo_deporte_agregar.getText().toString().length() > 0) ){
+
             SharedPreferences usario_datos = getContext().getSharedPreferences("Usuario_info", getContext().MODE_PRIVATE );
             int id_sesion = usario_datos.getInt("id", 0);
-            if( id_sesion != 0) {
+            if( id_sesion != 0 ) {
                 if( codigo != null){
                     Toast.makeText(getContext(), "Entra cuando se la direccion", Toast.LENGTH_LONG).show();
                     agregarLugar( codigo, id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(),
-                            textodescripcion.getText().toString(), 1, latitud, longitud);
+                        textodescripcion.getText().toString(), 4, latitud, longitud);
                 }else {
                     Toast.makeText(getContext(), "Entra cuando no se la direccion", Toast.LENGTH_LONG).show();
                     LatLng latLng = variablesGlobales.buscarLatLng( direccion_marker.getText().toString(), getContext());
                     if( latLng != null ){
                         Toast.makeText(getContext(), "Entra cuando esta el id en la sesion", Toast.LENGTH_LONG).show();
-                        agregarLugar( variablesGlobales.generate_code_random(10), id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(), textodescripcion.getText().toString(), 1, latLng.latitude, latLng.longitude);
+                        agregarLugar( variablesGlobales.generate_code_random(10), id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(), textodescripcion.getText().toString(), 4, latLng.latitude, latLng.longitude);
                     }else{
                         variablesGlobales.setAlertDialog(R.string.agregar_lugar, R.string.direccion_incorrecta, R.string.try_again, getContext());
                     }
@@ -242,6 +275,8 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
                 public void onClick(DialogInterface dialog, int item) {
                     switch (item) {
                         case 0:
+                            Intent intent = new Intent(getContext(), MapsActivity.class);
+                            getContext().startActivity(intent);
                             break;
                         case 1:
                             direccion_marker.setEnabled(true);
@@ -268,10 +303,12 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
             progressDialog.show();
 
             bandera = true;
+            bandera_guardado = true;
             String url = variablesGlobales.getUrl_DB() + "ws_registro_lugar.php?codigo="+
                     codigo+"&usuario="+
                     usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
-                    +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&latitud="+latitud+"&longitud="+longitud+" ";
+                    +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+2+"&latitud="+latitud+"&longitud="+longitud+"&codigo2=0&direccion2=0&latitud2=0&longitud2=0";
+            Log.d("URL", url);
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
             requestQueue.add(jsonObjectRequest);
         }else{
@@ -291,12 +328,39 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
         progressDialog.hide();
 
         if( bandera ){
-            direccion_lugar = "";
-            latitud = 0;
-            longitud = 0;
-            codigo = "";
-            Intent intent = new Intent(getContext(), MapsActivity.class);
-            startActivity(intent);
+            if( bandera_nombre_tipo_deporte ){
+                int dato_id_tipo_deporte =  0;
+                JSONArray jsonArray = response.optJSONArray("tipos_deporte");
+                try {
+                    JSONObject jsonObject_rta = null;
+                    jsonObject_rta = jsonArray.getJSONObject(0);
+                    dato_id_tipo_deporte = jsonObject_rta.getInt("id");
+                    if( dato_id_tipo_deporte != 0 ){
+                        bandera_nombre_tipo_deporte = false;
+                        guardarTiposDeporteNombre( dato_id_tipo_deporte );
+                    }else{
+                        Toast.makeText(getContext(), "No se guardó el lugar y tampoco va a guardar los tipos ", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if( bandera_guardado ){
+                JSONArray jsonArray = response.optJSONArray("lugar");
+                try {
+                    JSONObject jsonObject_rta = null;
+                    jsonObject_rta = jsonArray.getJSONObject(0);
+                    dato_id_lugar = jsonObject_rta.getInt("id");
+                    if( dato_id_lugar != 0 ){
+                        bandera_guardado = false;
+                        guardarTiposDeporte( dato_id_lugar );
+                    }else{
+                        Toast.makeText(getContext(), "No se guardó el lugar y tampoco va a guardar los tipos ", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }else{
             JSONArray jsonArray = response.optJSONArray("tipos_deporte");
             try {
@@ -305,13 +369,40 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
                     TipoDeporte tipoDeporte = new TipoDeporte();
                     JSONObject jsonObject = null;
                     jsonObject = jsonArray.getJSONObject(i);
-
                     lista_tipos_deporte_publico.add( new TipoDeporte(jsonObject.getInt("id"), jsonObject.getInt("id_tipo_lugar"), jsonObject.getString("nombre")));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             mostrarInformacionTiposDeporte();
+        }
+    }
+
+    private void guardarTiposDeporteNombre(int dato_id_tipo_deporte) {
+        String url = variablesGlobales.getUrl_DB() + "ws_registro_tipos_deporte_lugar.php?id_lugar="+ dato_id_lugar +"&id_tipo_deporte="+ dato_id_tipo_deporte +" ";
+        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+        Log.d("URL", url);
+        requestQueue.add(jsonObjectRequest);
+        Intent intent = new Intent(getContext(), MapsActivity.class);
+        getContext().startActivity(intent);
+    }
+
+    private void guardarTiposDeporte( int id ) {
+        if( !lista_tipo_deporte_guardar.isEmpty() ){
+            for( int i = 0; i < lista_tipo_deporte_guardar.size(); i++ ){
+                String url = variablesGlobales.getUrl_DB() + "ws_registro_tipos_deporte_lugar.php?id_lugar="+ id +"&id_tipo_deporte="+ lista_tipo_deporte_guardar.get(i) +" ";
+                jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+                Log.d("URL", url);
+                requestQueue.add(jsonObjectRequest);
+            }
+            Intent intent = new Intent(getContext(), MapsActivity.class);
+            getContext().startActivity(intent);
+        }else{
+            bandera_nombre_tipo_deporte = true;
+            String url = variablesGlobales.getUrl_DB() + "ws_registro_tipo_deporte.php?id_tipo_lugar="+ 4 +"&nombre="+ nombre_tipo_deporte_agregar.getText().toString() +" ";
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+            Log.d("URL", url);
+            requestQueue.add(jsonObjectRequest);
         }
     }
 

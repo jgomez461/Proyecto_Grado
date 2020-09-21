@@ -1,4 +1,4 @@
-package com.example.proyecto_grado.Clases;
+package com.example.proyecto_grado.entidades;
 
 import android.content.Context;
 

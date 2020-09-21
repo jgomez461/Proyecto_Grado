@@ -30,6 +30,16 @@
     <string name="titulo_ci_1_3">Intermediate Foods</string>
     <string name="titulo_cns_2_1">Restaurants unhealthy food</string>
     <string name="titulo_cns_3">Food unhealthy food</string>
+    <string name="titulo_dp_1">Sport with friends</string>
+    <string name="titulo_dp_2">Public gym</string>
+    <string name="titulo_dp_3">Healthy sports venues</string>
+    <string name="titulo_dpr_1">Private sport</string>
+    <string name="titulo_dpr_2">Sport with friends</string>
+    <string name="titulo_dpr_3">Private gyms</string>
+    <string name="titulo_cic_1">Cycle routes</string>
+    <string name="titulo_cic_2">Help the environment and your body</string>
+    <string name="titulo_cam_1">Hiking locations</string>
+    <string name="titulo_cam_2">Take care of your body</string>
     <string name="informacion_imges_comida_01">You can add places where they sell healthy food</string>
     <string name="informacion_imges_comida_02">Add places that stand out for providing healthy food for people with different eating styles.</string>
     <string name="informacion_imges_comida_03">If you consider that a place falls within the range of healthy food you can add it in this section.</string>
@@ -39,6 +49,16 @@
     <string name="informacion_imges_comida_no_s_01">Add places that stand out and that you like to buy fast food.</string>
     <string name="informacion_imges_comida_no_s_02">If you like to go to establishments that sell junk food you can add it in this section.</string>
     <string name="informacion_imges_comida_no_s_03">Add places you think are in the unhealthy food range.</string>
+    <string name="informacion_dp_01">Add the places that you think you can enjoy with people.</string>
+    <string name="informacion_dp_02">In this section you can add the sports that you practice and that are public.</string>
+    <string name="informacion_dp_03">You can add public sports venues in this section.</string>
+    <string name="informacion_dpr_01">In this section you can add private places where you can do sports such as: tennis, swimming, boxing...</string>
+    <string name="informacion_dpr_02">You can add private places where you can share moments of healthy sports with friends.</string>
+    <string name="informacion_dpr_03">Add in this section private gyms where you can exercise in a healthy way.</string>
+    <string name="informacion_cic_01">Add in this section places where you like to go cycling.</string>
+    <string name="informacion_cic_02">If you are a friend of the environment and you do not like to use public transport much but if you do, add the routes where you travel.</string>
+    <string name="informacion_cam_01">If you are used to getting up early to go for a walk or jog, add the places in this section.</string>
+    <string name="informacion_cam_02">Add the places that you think fall into this section.</string>
     <string name="filtocomida">Foods</string>
     <string name="filtoejercicio">Exercise</string>
     <string name="filtoejerciciopri"> Exercise</string>
@@ -84,5 +104,6 @@
     <string name="tipos_de_deporte">Loading sport types.</string>
     <string name="tipos_deporte">Selection of types of sport*</string>
     <string name="escriba_aqui">Type here</string>
+    <string name="nombre_tipo_deporte">Sport type name*</string>
 
 </resources>

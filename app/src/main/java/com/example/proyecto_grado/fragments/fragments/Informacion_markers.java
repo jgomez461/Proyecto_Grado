@@ -1,25 +1,20 @@
 package com.example.proyecto_grado.fragments.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.proyecto_grado.Clases.Model_iformacion_lugares;
 import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.entidades.Lugar;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Informacion_markers extends Fragment {
 

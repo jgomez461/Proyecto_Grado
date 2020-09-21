@@ -91,7 +91,4 @@ public class HomendialogComidas extends BottomSheetDialogFragment {
         tabs.setScrollPosition(pageIndex,0f,true);
         viewPager.setCurrentItem(pageIndex);
     }
-
-
-
 }

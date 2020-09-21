@@ -38,10 +38,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.example.proyecto_grado.MapsActivity;
 import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
+import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
@@ -55,18 +55,21 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 
 import static android.app.Activity.RESULT_OK;
 
-public class PageFragment_comidasaludable extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener {
+public class PageFragment_ciclorutas extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener {
 
     private EditText textodescripcion;
     private EditText nombre_lugar;
     private EditText direccion_marker;
+    private EditText direccion_marker_2;
     private Button añadirimagen;
     private Button agregar_lugar;
     private ImageButton btn_buscar_direccion;
+    private ImageButton btn_buscar_direccion_2;
     private ImageView imagenes;
     private ImageButton rotarderecha;
     private ImageButton rotarizquierda;
     private ImageButton restaurar;
+    private LayoutInflater layoutInflater;
     private RecyclerView recylcerimagenes;
     private ViewPager imagenesinformacion;
     private int contadorizqui = 0;
@@ -81,10 +84,15 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     private String path;
     private float xBegin = 0;
     private float yBegin = 0;
-    private double latitud;
-    private double longitud;
-    private String direccion_lugar;
-    private String codigo;
+    private double latitud1;
+    private double longitud1;
+    private String direccion_lugar1;
+    private String codigo1;
+    private double latitud2;
+    private double longitud2;
+    private String direccion_lugar2;
+    private String codigo2;
+    private int click_direccion = 0;
 
     ViewPager viewPager;
     Adaptador_informacion_lugares adapter;
@@ -96,37 +104,46 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     RequestQueue requestQueue;
     JsonObjectRequest jsonObjectRequest;
 
-    public PageFragment_comidasaludable(double latitud, double longitud, String direccion_lugar, String codigo) {
-        this.latitud = latitud;
-        this.longitud = longitud;
-        this.direccion_lugar = direccion_lugar;
-        this.codigo = codigo;
+
+    public PageFragment_ciclorutas(double latitud1, double longitud1, String direccion_lugar1, String codigo1, double latitud2, double longitud2, String direccion_lugar2, String codigo2) {
+        this.latitud1 = latitud1;
+        this.longitud1 = longitud1;
+        this.direccion_lugar1 = direccion_lugar1;
+        this.codigo1 = codigo1;
+        this.latitud2 = latitud2;
+        this.longitud2 = longitud2;
+        this.direccion_lugar2 = direccion_lugar2;
+        this.codigo2 = codigo2;
     }
 
-    public PageFragment_comidasaludable() {
+    public PageFragment_ciclorutas() {
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         //View viewGroup = inflater.inflate(R.layout.pageviewcomidasaludable, container, false);
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.pageviewcomidasaludable, container, false);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.pageviewciclorutas, container, false);
 
         textodescripcion = viewGroup.findViewById(R.id.textodescripcion);
         nombre_lugar = viewGroup.findViewById(R.id.nombre_lugar_c);
-        direccion_marker = viewGroup.findViewById(R.id.direccion_lugar);
+        direccion_marker = viewGroup.findViewById(R.id.direccion_lugar_ca);
+        direccion_marker_2 = viewGroup.findViewById(R.id.direccion_lugar_2);
         btn_buscar_direccion = viewGroup.findViewById(R.id.btn_buscar_direccion);
+        btn_buscar_direccion_2 = viewGroup.findViewById(R.id.btn_buscar_direccion_2);
         agregar_lugar = viewGroup.findViewById(R.id.add_location);
 
-        if( direccion_lugar != null ){
-            direccion_marker.setText(direccion_lugar);
+        if( direccion_lugar1 != null ){
+            direccion_marker.setText(direccion_lugar1);
+        }
+        if( direccion_lugar2 != null ){
+            direccion_marker_2.setText(direccion_lugar2);
         }
 
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_1, R.string.titulo_1, R.string.informacion_imges_comida_01));
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_2, R.string.titulo_2, R.string.informacion_imges_comida_02));
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_3, R.string.titulo_3, R.string.informacion_imges_comida_03));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_ciclorutas_1, R.string.titulo_cic_1, R.string.informacion_cic_01));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_ciclorutas_2, R.string.titulo_cic_2, R.string.informacion_cic_02));
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
@@ -135,7 +152,6 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
         //imagenesinformacion = (RecyclerView) viewGroup.findViewById(R.id.recyclerinformacion);
         imagenesinformacion = viewGroup.findViewById(R.id.recyclerinformacion);
         imagenesinformacion.setAdapter(adapter);
-        imagenesinformacion.setCurrentItem(1);
 
         añadirimagen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +163,15 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
         btn_buscar_direccion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                click_direccion = 1;
+                cambiarDireccion();
+            }
+        });
+
+        btn_buscar_direccion_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                click_direccion = 2;
                 cambiarDireccion();
             }
         });
@@ -173,21 +198,24 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
 
     VariablesGlobales variablesGlobales =  new VariablesGlobales();
     private void validacionInformacion() {
-        if( nombre_lugar.getText().toString().length() > 0 && textodescripcion.getText().toString().length() > 0 && direccion_marker.getText().toString().length() > 0 ){
+        if( nombre_lugar.getText().toString().length() > 0 && textodescripcion.getText().toString().length() > 0 && direccion_marker.getText().toString().length() > 0
+                && direccion_marker_2.getText().toString().length() > 0 ){
             Toast.makeText(getContext(), "SI", Toast.LENGTH_SHORT).show();
             SharedPreferences usario_datos = getContext().getSharedPreferences("Usuario_info", getContext().MODE_PRIVATE );
             int id_sesion = usario_datos.getInt("id", 0);
             if( id_sesion != 0) {
-                if( codigo != null){
+                if( codigo1 != null){
                     Toast.makeText(getContext(), "Entra cuando se la direccion", Toast.LENGTH_LONG).show();
-                    agregarLugar( codigo, id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(),
-                            textodescripcion.getText().toString(), 1, latitud, longitud);
+                    agregarLugar( codigo1, id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(),
+                            textodescripcion.getText().toString(), 7, latitud1, longitud1, codigo2, direccion_marker_2.getText().toString(), latitud1, longitud2);
                 }else {
                     Toast.makeText(getContext(), "Entra cuando no se la direccion", Toast.LENGTH_LONG).show();
                     LatLng latLng = variablesGlobales.buscarLatLng( direccion_marker.getText().toString(), getContext());
-                    if( latLng != null ){
+                    LatLng latLng2 = variablesGlobales.buscarLatLng( direccion_marker_2.getText().toString(), getContext());
+                    if( latLng != null && latLng2 != null ){
                         Toast.makeText(getContext(), "Entra cuando esta el id en la sesion", Toast.LENGTH_LONG).show();
-                        agregarLugar( variablesGlobales.generate_code_random(10), id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(), textodescripcion.getText().toString(), 1, latLng.latitude, latLng.longitude);
+                        agregarLugar( variablesGlobales.generate_code_random(10), id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(),
+                                textodescripcion.getText().toString(), 7, latLng.latitude, latLng.longitude, variablesGlobales.generate_code_random(10), direccion_marker_2.getText().toString(), latLng2.latitude, latLng2.longitude);
                     }else{
                         variablesGlobales.setAlertDialog(R.string.agregar_lugar, R.string.direccion_incorrecta, R.string.try_again, getContext());
                     }
@@ -210,9 +238,32 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
                 public void onClick(DialogInterface dialog, int item) {
                     switch (item) {
                         case 0:
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+                            builder1.setIcon(R.drawable.pregunta).setTitle("¿Está seguro?").setMessage("Si sale el progreso no se guardará");
+                            builder1.setPositiveButton(
+                                    "Salir al mapa",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            Intent intent = new Intent(getContext(), MapsActivity.class);
+                                            getContext().startActivity(intent);
+                                        }
+                                    });
+                            builder1.setNegativeButton("Cancelar",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            AlertDialog alert11 = builder1.create();
+                            alert11.show();
                             break;
                         case 1:
-                            direccion_marker.setEnabled(true);
+                            if( click_direccion == 1 ){
+                                direccion_marker.setEnabled(true);
+                            }else if( click_direccion == 2 ){
+                                direccion_marker_2.setEnabled(true);
+                            }
                             break;
                         case 2:
                             dialog.dismiss();
@@ -226,10 +277,11 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
         }
     }
 
-    public void agregarLugar( String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, double latitud, double longitud ){
+    public void agregarLugar( String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, double latitud,
+                              double longitud, String codigo2, String direccion2, double latitud2, double longitud2 ){
 
         if( !codigo.isEmpty() && usuario != 0 && !direccion.isEmpty() && !nombre_lugar.isEmpty() && !descripcion_lugar.isEmpty() &&
-                tipo_lugar != 0 && latitud != 0 && longitud != 0 ){
+                tipo_lugar != 0 && latitud != 0 && longitud != 0 && !codigo2.isEmpty() && !direccion2.isEmpty() && latitud2 != 0 && longitud2 != 0 ){
 
             progressDialog = new ProgressDialog(getContext());
             progressDialog.setTitle(R.string.registro_lugar);
@@ -238,8 +290,8 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
 
             String url = variablesGlobales.getUrl_DB() + "ws_registro_lugar.php?codigo="+
                     codigo+"&usuario="+
-                    usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
-                    +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+1+"&latitud="+latitud+"&longitud="+longitud+"&codigo2=0&direccion2=0&latitud2=0&longitud2=0";
+                    usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="+descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+4+"&latitud="+latitud+"&longitud="+longitud+"&codigo2="+codigo2+"&direccion2="+direccion2+"&latitud2="+
+                    latitud2+"&longitud2="+longitud2+"";
 
             Log.d("REGISTRO", url);
 
@@ -260,11 +312,6 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     @Override
     public void onResponse(JSONObject response) {
         progressDialog.hide();
-
-        direccion_lugar = "";
-        latitud = 0;
-        longitud = 0;
-        codigo = "";
         Intent intent = new Intent(getContext(), MapsActivity.class);
         startActivity(intent);
     }
@@ -277,7 +324,6 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     }*/
 
     private void rotarizquierdaa(View view, int posicioni, int posiciond) {
-
         if (posiciond != 360) {
             posiciond += 90;
             imagenes.setRotation(imagenes.getRotation() + posiciond);
@@ -451,6 +497,4 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     }
 
     //-------------------------------------------------------------------- fin
-
-
 }

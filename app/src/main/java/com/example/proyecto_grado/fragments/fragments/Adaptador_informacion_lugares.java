@@ -10,18 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.example.proyecto_grado.Clases.Model_iformacion_lugares;
+import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.example.proyecto_grado.R;
 
 import java.util.List;
 
 public class Adaptador_informacion_lugares extends PagerAdapter {
 
-    private List<Model_iformacion_lugares> model_iformacion_lugares;
+    private List<VariablesGlobales.Model_iformacion_lugares> model_iformacion_lugares;
     private LayoutInflater layoutInflater;
     private Context context;
 
-    public Adaptador_informacion_lugares(List<Model_iformacion_lugares> model_iformacion_lugares, Context context) {
+    public Adaptador_informacion_lugares(List<VariablesGlobales.Model_iformacion_lugares> model_iformacion_lugares, Context context) {
         this.model_iformacion_lugares = model_iformacion_lugares;
         this.context = context;
     }

@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/expanded"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -208,6 +209,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/lista_tipos_deporte_seleccion"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
@@ -221,18 +223,73 @@
                             android:text="@string/tipos_deporte"
                             android:textColor="@color/colornegro" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/lista_tipos_deporte"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
-                            android:layout_marginTop="5dp"
-                            android:background="#00000000"
-                            android:orientation="horizontal">
-                        </androidx.recyclerview.widget.RecyclerView>
+                            android:orientation="horizontal"
+                            android:layout_weight="3">
 
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/lista_tipos_deporte"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:layout_weight="2"
+                                android:layout_marginRight="5dp"
+                                android:layout_marginTop="5dp"
+                                android:background="#00000000"
+                                android:orientation="horizontal">
+                            </androidx.recyclerview.widget.RecyclerView>
+
+                            <ImageButton
+                                android:id="@+id/agregar_tipo_deporte"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/agregar_tipo_deporte_boton"
+                                android:background="@color/colortransparente"
+                                tools:ignore="ContentDescription" />
+                        </LinearLayout>
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/contenido_agregar_tipo_deporte"
+                        android:layout_width="match_parent"
+                        android:visibility="gone"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp">
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="27dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="@string/nombre_tipo_deporte"
+                            android:textColor="@color/colornegro" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="#131313"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="35"
+                            app:counterOverflowTextAppearance="@style/CounterOverFlow"
+                            app:hintEnabled="false">
+
+                            <EditText
+                                android:id="@+id/nombre_tipo_deporte"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:background="@drawable/estiloedittextformcomidas"
+                                android:drawableLeft="@drawable/nombre_luga"
+                                android:drawableRight="@drawable/cancelar_agregar_tipo_deporte"
+                                android:hint="@string/escriba_aqui"
+                                android:inputType="textMultiLine" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout

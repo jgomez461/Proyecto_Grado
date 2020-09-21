@@ -109,7 +109,7 @@
                                 android:layout_height="35dp"
                                 android:background="@drawable/estiloedittextformcomidas"
                                 android:drawableLeft="@drawable/nombre_luga"
-                                android:hint="@string/nombre_lugar"
+                                android:hint="@string/escriba_aqui"
                                 android:inputType="textMultiLine" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -161,7 +161,7 @@
                                 android:enabled="false"
                                 android:background="@drawable/estiloedittextformcomidas"
                                 android:drawableLeft="@drawable/edit_location_marker"
-                                android:hint="@string/direccion_marcador"
+                                android:hint="@string/escriba_aqui"
                                 android:textColor="@color/colornegro"
                                 android:inputType="textMultiLine"/>
                         </com.google.android.material.textfield.TextInputLayout>
@@ -200,7 +200,7 @@
                                 android:background="@drawable/estiloedittextformcomidas"
                                 android:drawableLeft="@drawable/descripcion_contenido"
                                 android:gravity="top"
-                                android:hint="@string/descripcion_lugar"
+                                android:hint="@string/escriba_aqui"
                                 android:maxLines="5"
                                 android:textColor="@color/colornegro" />
                         </com.google.android.material.textfield.TextInputLayout>

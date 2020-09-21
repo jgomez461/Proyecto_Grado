@@ -3,12 +3,16 @@ package com.example.proyecto_grado.fragments.fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyecto_grado.R;
@@ -27,6 +31,7 @@ public class AdaptadorTiposDeporte extends RecyclerView.Adapter<AdaptadorTiposDe
     int posicion;
     List<Integer> lista_deporte_seleccionados;
     boolean bandera = false;
+    List<Integer> lista_secundaria = new ArrayList<>();
 
 
     public AdaptadorTiposDeporte(Context context, List<TipoDeporte> listatipodeporte, Conocerposicion miposicion,  List<Integer> lista_deporte_seleccionados ) {
@@ -50,6 +55,27 @@ public class AdaptadorTiposDeporte extends RecyclerView.Adapter<AdaptadorTiposDe
         holder.textofiltro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean bandera = false;
+                int posicicion_arreglo = -12;
+                for (int i=0; i<lista_deporte_seleccionados.size(); i++){
+                    if( lista_deporte_seleccionados.get(i).equals(listatipodeporte.get(position).getId()) ){
+                        bandera = true;
+                        posicicion_arreglo = i;
+                        break;
+                    }
+                }
+                if( !bandera && posicicion_arreglo == -12 ){
+                    lista_deporte_seleccionados.add(listatipodeporte.get(position).getId());
+                    holder.textofiltro.setBackgroundColor(Color.parseColor("#F48403"));
+                    holder.textofiltro.setTextColor(Color.WHITE);
+                    holder.textofiltro.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check_tipo_deporte, 0, 0, 0);
+                }else{
+                    lista_deporte_seleccionados.remove(posicicion_arreglo);
+                    holder.textofiltro.setBackgroundColor(Color.parseColor("#F3EFEF"));
+                    holder.textofiltro.setTextColor(Color.BLACK);
+                    holder.textofiltro.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                }
+/*
                 for(int i=0 ; i<lista_deporte_seleccionados.size() ; i++){
                     if( lista_deporte_seleccionados.get(i) == listatipodeporte.get(position).getId() ){
                         bandera = true;
@@ -72,7 +98,7 @@ public class AdaptadorTiposDeporte extends RecyclerView.Adapter<AdaptadorTiposDe
                     lista_deporte_seleccionados.add(listatipodeporte.get(position).getId());
                     miposicion.metodoParaConocerLaposicion( lista_deporte_seleccionados, listatipodeporte.get(position).getId(), bandera);
                     notifyDataSetChanged();
-                }
+                }*/
             }
         });
     }

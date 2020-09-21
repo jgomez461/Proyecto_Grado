@@ -8,27 +8,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.proyecto_grado.Clases.VariablesGlobales;
+import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.example.proyecto_grado.entidades.Usuario;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -150,7 +145,6 @@ public class Register_users extends AppCompatActivity implements Response.Listen
         Usuario usuario_info = new Usuario();
         JSONObject jsonObject = null;
         try {
-
             jsonObject = jsonArray.getJSONObject(0);
             SharedPreferences usario_datos = getSharedPreferences("Usuario_info", this.MODE_PRIVATE);
             SharedPreferences.Editor editor = usario_datos.edit();

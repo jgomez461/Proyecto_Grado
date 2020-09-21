@@ -52,21 +52,25 @@ public class AdaptadorCategorias_principal extends RecyclerView.Adapter<Adaptado
 
         if (seleccion[position] == false) {
             holder.textofiltro.setBackgroundColor(Color.WHITE);
+            holder.textofiltro.setTextColor(Color.BLACK);
+            holder.textofiltro.setCompoundDrawablesWithIntrinsicBounds(listacategoria.get(position).getCategoria(), 0, 0, 0);
         }else{
-            holder.textofiltro.setBackgroundColor(Color.parseColor("#D31B1B"));
+            holder.textofiltro.setBackgroundColor(Color.parseColor("#F48403"));
+            holder.textofiltro.setTextColor(Color.WHITE);
+            holder.textofiltro.setCompoundDrawablesWithIntrinsicBounds(listacategoria.get(position).getCategoria_secundario(), 0, 0, 0);
         }
 
         holder.textofiltro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                miposicion.metodoParalaposiciondelclick(position);
-                for(int i=0; i<seleccion.length;i++){
-                    seleccion[i] = false;
-                }
-                seleccion[position] = true;
-                posicion = position;
-                holder.textofiltro.setBackgroundColor(Color.parseColor("#D31B1B"));
-                notifyDataSetChanged();
+            miposicion.metodoParalaposiciondelclick(position);
+            for(int i=0; i<seleccion.length;i++){
+                seleccion[i] = false;
+            }
+            seleccion[position] = true;
+            posicion = position;
+            holder.textofiltro.setBackgroundColor(Color.parseColor("#F48403"));
+            notifyDataSetChanged();
             }
         });
     }

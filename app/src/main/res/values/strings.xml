@@ -25,10 +25,20 @@
     <string name="titulo_1">Tiendas saludables</string>
     <string name="titulo_2">Alimentos variados</string>
     <string name="titulo_3">Restaurantes saludables</string>
+    <string name="titulo_dp_1">Deporte con amigos</string>
+    <string name="titulo_dp_2">Gimnasio público</string>
+    <string name="titulo_dp_3">Lugares de deporte saludable</string>
+    <string name="titulo_dpr_1">Deporte privado</string>
+    <string name="titulo_dpr_2">Deporte con amigos</string>
+    <string name="titulo_dpr_3">Gimnasios privados</string>
     <string name="titulo_ci_2">Restaurantes comida Intermedia</string>
     <string name="titulo_ci_1_3">Alimentos Intermedios</string>
     <string name="titulo_cns_2_1">Restaurantes comida no saludable</string>
     <string name="titulo_cns_3">Alimentos comida no saludable</string>
+    <string name="titulo_cic_1">Espacios de ciclorutas</string>
+    <string name="titulo_cic_2">Ayuda al medio ambiente y a tu cuerpo</string>
+    <string name="titulo_cam_1">Lugares de caminatas</string>
+    <string name="titulo_cam_2">Cuida tu cuerpo</string>
     <string name="informacion_imges_comida_01">Puedes agregar lugares donde vendan alimentos saludables.</string>
     <string name="informacion_imges_comida_02">Agrega lugares que se destaquen por brindar comida saludable para personas con difrentes estilos alimenticios.</string>
     <string name="informacion_imges_comida_03">Si consideras que un lugar entra en el rango de comida saludable puedes agregarlo en esta sección.</string>
@@ -38,6 +48,16 @@
     <string name="informacion_imges_comida_no_s_01">Agrega lugares que se destaquen y que te guste adquirir comidas rápidas.</string>
     <string name="informacion_imges_comida_no_s_02">Si te gusta ir a establecimientos donde vendan comida chatarra puedes agregarlo en esta sección.</string>
     <string name="informacion_imges_comida_no_s_03">Agrega los lugares que consideres que están en el rango de comida no saludable.</string>
+    <string name="informacion_dp_01">Agrega los lugares que consideres que puedes disfrutar con personas.</string>
+    <string name="informacion_dp_02">En esta sección puedes agregar los deportes que practiques y que sean publicos.</string>
+    <string name="informacion_dp_03">Puedes agregar lugares de deporte público en esta sección.</string>
+    <string name="informacion_dpr_01">En esta sección puedes agregar lugares privados donde puedas hacer deporte como: tenis, natación, boxeo...</string>
+    <string name="informacion_dpr_02">Puedes agregar lugares privados donde puedas conpartir momentos de deporte saludable con amigos.</string>
+    <string name="informacion_dpr_03">Agrega en esta sección gimnasios privados donde puedas ejercitarte de manera saludable.</string>
+    <string name="informacion_cic_01">Agrega en esta sección lugares donde te guste salir a montar cicla.</string>
+    <string name="informacion_cic_02">Si eres amigo del medio ambiente y no te gusta usar mucho los transporte publicos pero si la cilca, agrega las rutas donde transitas.</string>
+    <string name="informacion_cam_01">Si estás acostumbrado a madrugar para salir a caminar o trotar agrega los lugares donde vas en está sección.</string>
+    <string name="informacion_cam_02">Agrega los lugares que consideres que entran en está sección.</string>
     <string name="filtocomida">Comidas</string>
     <string name="filtoejercicio">Ejercicio</string>
     <string name="filtoejerciciopri"> Ejercicio</string>
@@ -83,5 +103,6 @@
     <string name="tipos_de_deporte">Cargando tipos de deporte.</string>
     <string name="tipos_deporte">Selección tipos de deporte*</string>
     <string name="escriba_aqui">Escriba aquí</string>
+    <string name="nombre_tipo_deporte">Nombre tipo deporte*</string>
 
 </resources>

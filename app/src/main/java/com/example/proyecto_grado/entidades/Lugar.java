@@ -11,11 +11,16 @@ public class Lugar {
     private String nombre_lugar;
     private String descripcion_lugar;
     private int tipo_lugar;
+    private int tipo_lugar_principal;
     private String fecha_creacion;
     private double latitud;
     private double longitud;
+    private String codigo2;
+    private String direccion2;
+    private double latitud2;
+    private double longitud2;
 
-    public Lugar(int id, String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, String fecha_creacion, double latitud, double longitud) {
+    public Lugar(int id, String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, int tipo_lugar_principal, String fecha_creacion, double latitud, double longitud, String codigo2, String direccion2, double latitud2, double longitud2) {
         this.id = id;
         this.codigo = codigo;
         this.usuario = usuario;
@@ -23,9 +28,14 @@ public class Lugar {
         this.nombre_lugar = nombre_lugar;
         this.descripcion_lugar = descripcion_lugar;
         this.tipo_lugar = tipo_lugar;
+        this.tipo_lugar_principal = tipo_lugar_principal;
         this.fecha_creacion = fecha_creacion;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.codigo2 = codigo2;
+        this.direccion2 = direccion2;
+        this.latitud2 = latitud2;
+        this.longitud2 = longitud2;
     }
 
     public Lugar() {
@@ -87,6 +97,14 @@ public class Lugar {
         this.tipo_lugar = tipo_lugar;
     }
 
+    public int getTipo_lugar_principal() {
+        return tipo_lugar_principal;
+    }
+
+    public void setTipo_lugar_principal(int tipo_lugar_principal) {
+        this.tipo_lugar_principal = tipo_lugar_principal;
+    }
+
     public String getFecha_creacion() {
         return fecha_creacion;
     }
@@ -109,5 +127,37 @@ public class Lugar {
 
     public void setLongitud(double longitud) {
         this.longitud = longitud;
+    }
+
+    public String getCodigo2() {
+        return codigo2;
+    }
+
+    public void setCodigo2(String codigo2) {
+        this.codigo2 = codigo2;
+    }
+
+    public String getDireccion2() {
+        return direccion2;
+    }
+
+    public void setDireccion2(String direccion2) {
+        this.direccion2 = direccion2;
+    }
+
+    public double getLatitud2() {
+        return latitud2;
+    }
+
+    public void setLatitud2(double latitud2) {
+        this.latitud2 = latitud2;
+    }
+
+    public double getLongitud2() {
+        return longitud2;
+    }
+
+    public void setLongitud2(double longitud2) {
+        this.longitud2 = longitud2;
     }
 }

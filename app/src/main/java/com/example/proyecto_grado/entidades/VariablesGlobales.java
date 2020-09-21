@@ -1,42 +1,22 @@
-package com.example.proyecto_grado.Clases;
+package com.example.proyecto_grado.entidades;
 
-import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.proyecto_grado.MapsActivity;
-import com.example.proyecto_grado.R;
-import com.example.proyecto_grado.Register_users;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class VariablesGlobales {
 
-    public String url_DB = "https://f9f49f62ba09.ngrok.io/DB_proyecto_grado/";
+    //clave de google maps -> jgomezp97
+    //AIzaSyBZfPecjBnm2jS-pZ5DpJVJOAFcm08nkSE
+    public String url_DB = "https://f3d8d837dc20.ngrok.io/DB_proyecto_grado/";
     char [] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'W', 'x', 'y', 'z' };
 
     public VariablesGlobales(String url_DB) {
@@ -105,4 +85,41 @@ public class VariablesGlobales {
         return number;
     }
 
+    public static class Model_iformacion_lugares {
+
+        private int imagen;
+        private int titulo;
+        private int contenido;
+
+        public Model_iformacion_lugares(int imagen, int titulo, int contenido) {
+            this.imagen = imagen;
+            this.titulo = titulo;
+            this.contenido = contenido;
+        }
+
+        public int getImagen() {
+            return imagen;
+        }
+
+        public void setImagen(int imagen) {
+            this.imagen = imagen;
+        }
+
+        public int getTitulo() {
+            return titulo;
+        }
+
+        public void setTitulo(int titulo) {
+            this.titulo = titulo;
+        }
+
+        public int getContenido() {
+            return contenido;
+        }
+
+        public void setContenido(int contenido) {
+            this.contenido = contenido;
+        }
+
+    }
 }

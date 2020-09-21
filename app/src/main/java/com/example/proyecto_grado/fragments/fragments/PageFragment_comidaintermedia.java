@@ -38,8 +38,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.proyecto_grado.Clases.Model_iformacion_lugares;
-import com.example.proyecto_grado.Clases.VariablesGlobales;
+import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.example.proyecto_grado.MapsActivity;
 import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
@@ -89,7 +88,7 @@ public class PageFragment_comidaintermedia extends Fragment implements Response.
 
     ViewPager viewPager;
     Adaptador_informacion_lugares adapter;
-    List<Model_iformacion_lugares> model_iformacion_lugares;
+    List<VariablesGlobales.Model_iformacion_lugares> model_iformacion_lugares;
 
     PhotoViewAttacher photoViewAttacher;
     RecyclerViewImagenes_lugares_comida adaptador;
@@ -124,9 +123,9 @@ public class PageFragment_comidaintermedia extends Fragment implements Response.
 
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_comida_intermedia_1, R.string.titulo_ci_1_3, R.string.informacion_imges_comida_intermedia_01));
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_comida_intermedia_2, R.string.titulo_ci_2, R.string.informacion_imges_comida_intermedia_02));
-        model_iformacion_lugares.add(new Model_iformacion_lugares(R.drawable.descripcion_comida_intermedia_3, R.string.titulo_ci_1_3, R.string.informacion_imges_comida_intermedia_03));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_intermedia_1, R.string.titulo_ci_1_3, R.string.informacion_imges_comida_intermedia_01));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_intermedia_2, R.string.titulo_ci_2, R.string.informacion_imges_comida_intermedia_02));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_intermedia_3, R.string.titulo_ci_1_3, R.string.informacion_imges_comida_intermedia_03));
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
@@ -239,7 +238,7 @@ public class PageFragment_comidaintermedia extends Fragment implements Response.
             String url = variablesGlobales.getUrl_DB() + "ws_registro_lugar.php?codigo="+
                     codigo+"&usuario="+
                     usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
-                    +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&latitud="+latitud+"&longitud="+longitud+" ";
+                    +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+1+"&latitud="+latitud+"&longitud="+longitud+"&codigo2=0&direccion2=0&latitud2=0&longitud2=0";
 
             Log.d("REGISTRO", url);
 
