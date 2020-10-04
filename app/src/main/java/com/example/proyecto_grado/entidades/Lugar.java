@@ -1,6 +1,7 @@
 package com.example.proyecto_grado.entidades;
 
 import java.util.Date;
+import java.util.List;
 
 public class Lugar {
 
@@ -19,8 +20,12 @@ public class Lugar {
     private String direccion2;
     private double latitud2;
     private double longitud2;
+    private List<String> imagenes;
+    private List<TiposDeporteLugar> tiposDeporteLugars;
 
-    public Lugar(int id, String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, int tipo_lugar_principal, String fecha_creacion, double latitud, double longitud, String codigo2, String direccion2, double latitud2, double longitud2) {
+    public Lugar(int id, String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar,
+                 int tipo_lugar, int tipo_lugar_principal, String fecha_creacion, double latitud, double longitud, String codigo2,
+                 String direccion2, double latitud2, double longitud2, List<String> imagenes, List<TiposDeporteLugar> tiposDeporteLugars) {
         this.id = id;
         this.codigo = codigo;
         this.usuario = usuario;
@@ -36,6 +41,8 @@ public class Lugar {
         this.direccion2 = direccion2;
         this.latitud2 = latitud2;
         this.longitud2 = longitud2;
+        this.imagenes = imagenes;
+        this.tiposDeporteLugars = tiposDeporteLugars;
     }
 
     public Lugar() {
@@ -159,5 +166,33 @@ public class Lugar {
 
     public void setLongitud2(double longitud2) {
         this.longitud2 = longitud2;
+    }
+
+    public List<String> getImagenes() {
+        return imagenes;
+    }
+
+    public void setImagenes(List<String> imagenes) {
+        this.imagenes = imagenes;
+    }
+
+    public List<TiposDeporteLugar> getTiposDeporteLugars() {
+        return tiposDeporteLugars;
+    }
+
+    public void setTiposDeporteLugars(List<TiposDeporteLugar> tiposDeporteLugars) {
+        this.tiposDeporteLugars = tiposDeporteLugars;
+    }
+
+    @Override
+    public String toString() {
+        return "Lugar{" +
+                "id=" + id +
+                ", codigo='" + codigo + '\'' +
+                ", nombre_lugar='" + nombre_lugar + '\'' +
+                ", tipo_lugar_principal=" + tipo_lugar_principal +
+                ", imagenes=" + imagenes.toString() +
+                ", tiposDeporteLugars=" + tiposDeporteLugars.toString() +
+                '}';
     }
 }

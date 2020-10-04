@@ -326,7 +326,6 @@ public class PageFragment_deportepublico extends Fragment implements Response.Li
     @Override
     public void onResponse(JSONObject response) {
         progressDialog.hide();
-
         if( bandera ){
             if( bandera_nombre_tipo_deporte ){
                 int dato_id_tipo_deporte =  0;

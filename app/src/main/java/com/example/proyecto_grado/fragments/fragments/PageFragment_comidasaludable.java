@@ -14,7 +14,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,14 +46,24 @@ import com.example.proyecto_grado.MapsActivity;
 import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okio.Utf8;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 import static android.app.Activity.RESULT_OK;
@@ -71,7 +84,9 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     private ViewPager imagenesinformacion;
     private int contadorizqui = 0;
     private int contadorderecha = 360;
-    private ArrayList<Imagenes_Recycler_Uris> uris = new ArrayList<>();
+    private List<Uri> saveurisFirebaseStorage = new ArrayList<>();
+    private List<Bitmap> savebotmapsbaseStorage = new ArrayList<>();
+    private ArrayList<Imagenes_Recycler_Uris> uris = new ArrayList<>(); //en esta variable guardamos las imagenes que nos dan
     private ArrayList<Imagenes_Recycler_Uris> uristotales = new ArrayList<>();
     private ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private final String CARPETA_RAIZ = "misimagenes/";
@@ -85,6 +100,15 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     private double longitud;
     private String direccion_lugar;
     private String codigo;
+    private String codigo_generado;
+
+    private StorageReference storageReference;
+    private StorageReference filepath;
+    private boolean imagenesguardadas = false;
+    ArrayList<String> urlimagenes = new ArrayList<>();
+    ArrayList<Uri> urlimagenes_uri = new ArrayList<>();
+    private boolean banderalugarguardado = false;
+    private int dato_id_lugar =  0;
 
     ViewPager viewPager;
     Adaptador_informacion_lugares adapter;
@@ -95,6 +119,7 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     ProgressDialog progressDialog;
     RequestQueue requestQueue;
     JsonObjectRequest jsonObjectRequest;
+    VariablesGlobales variablesGlobales =  new VariablesGlobales();
 
     public PageFragment_comidasaludable(double latitud, double longitud, String direccion_lugar, String codigo) {
         this.latitud = latitud;
@@ -130,6 +155,8 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
+        storageReference = FirebaseStorage.getInstance().getReference();
+
         añadirimagen = (Button) viewGroup.findViewById(R.id.cargarimagen);
         recylcerimagenes = (RecyclerView) viewGroup.findViewById(R.id.recyvlerimagenes);
         //imagenesinformacion = (RecyclerView) viewGroup.findViewById(R.id.recyclerinformacion);
@@ -154,11 +181,12 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
         agregar_lugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                codigo_generado = variablesGlobales.generate_code_random(10);
                 validacionInformacion();
             }
         });
 
-        requestQueue = Volley.newRequestQueue( getContext());
+        requestQueue = Volley.newRequestQueue(getContext());
 
         if (uris.isEmpty()) {
             recylcerimagenes.setVisibility(View.GONE);
@@ -170,8 +198,90 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
         return viewGroup;
     }
 
+    private String photoLink = "";
+    private Uri uri_ulr = null;
+    private void guardarImagenesFirabaseStorage() {
+        if( uris.size() > 0 && saveurisFirebaseStorage.size() == 0 ){
+            for (int i=0; i < uris.size(); i++){
+                saveurisFirebaseStorage.add(uris.get(i).getImagenuri());
+            }
+        }
+        if( saveurisFirebaseStorage.size() > 0 && urlimagenes.size() == 0 ){
+            for (int i=0; i< saveurisFirebaseStorage.size(); i++){
+                if( codigo != null ){
+                    filepath = storageReference.child(codigo).child(saveurisFirebaseStorage.get(i).getLastPathSegment());
+                    filepath.putFile(saveurisFirebaseStorage.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            imagenesguardadas = true;
+                            Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    photoLink = uri.toString();
+                                    uri_ulr = uri;
+                                    guardarImagenesDB( photoLink );
+                                    Log.d("URK", photoLink);
+                                    Log.d("URIII", uri.toString());
+                                    imagenesguardadas = true;
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            imagenesguardadas = false;
+                        }
+                    });
+                }else{
+                    filepath = storageReference.child(codigo_generado).child(saveurisFirebaseStorage.get(i).getLastPathSegment());
+                    filepath.putFile(saveurisFirebaseStorage.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            imagenesguardadas = true;
+                            Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    photoLink = uri.toString();
+                                    uri_ulr = uri;
+                                    urlimagenes_uri.add(uri);
+                                    guardarImagenesDB( photoLink );
+                                    Log.d("URK", photoLink);
+                                    Log.d("URIII", uri.toString());
+                                    imagenesguardadas = true;
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Falló", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            imagenesguardadas = false;
+                        }
+                    });
+                }
+            }
+        }else{
+            imagenesguardadas = true;
+        }
+        Toast.makeText(getContext(), "BUENA", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), MapsActivity.class);
+        getContext().startActivity(intent);
+        /*
+        if( urlimagenes.size() > 0 && urlimagenes.size() == saveurisFirebaseStorage.size()){
+            validacionInformacion();
+        }else{
+            Toast.makeText(getContext(), "Algunos imagenes no fueron subidas correctamente", Toast.LENGTH_SHORT).show();
+        }*/
+    }
 
-    VariablesGlobales variablesGlobales =  new VariablesGlobales();
     private void validacionInformacion() {
         if( nombre_lugar.getText().toString().length() > 0 && textodescripcion.getText().toString().length() > 0 && direccion_marker.getText().toString().length() > 0 ){
             Toast.makeText(getContext(), "SI", Toast.LENGTH_SHORT).show();
@@ -187,7 +297,7 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
                     LatLng latLng = variablesGlobales.buscarLatLng( direccion_marker.getText().toString(), getContext());
                     if( latLng != null ){
                         Toast.makeText(getContext(), "Entra cuando esta el id en la sesion", Toast.LENGTH_LONG).show();
-                        agregarLugar( variablesGlobales.generate_code_random(10), id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(), textodescripcion.getText().toString(), 1, latLng.latitude, latLng.longitude);
+                        agregarLugar( codigo_generado, id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(), textodescripcion.getText().toString(), 1, latLng.latitude, latLng.longitude);
                     }else{
                         variablesGlobales.setAlertDialog(R.string.agregar_lugar, R.string.direccion_incorrecta, R.string.try_again, getContext());
                     }
@@ -227,10 +337,8 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     }
 
     public void agregarLugar( String codigo, int usuario, String direccion, String nombre_lugar, String descripcion_lugar, int tipo_lugar, double latitud, double longitud ){
-
         if( !codigo.isEmpty() && usuario != 0 && !direccion.isEmpty() && !nombre_lugar.isEmpty() && !descripcion_lugar.isEmpty() &&
                 tipo_lugar != 0 && latitud != 0 && longitud != 0 ){
-
             progressDialog = new ProgressDialog(getContext());
             progressDialog.setTitle(R.string.registro_lugar);
             progressDialog.setMessage(R.string.intento_guardar_lugar+"");
@@ -240,9 +348,8 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
                     codigo+"&usuario="+
                     usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
                     +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+1+"&latitud="+latitud+"&longitud="+longitud+"&codigo2=0&direccion2=0&latitud2=0&longitud2=0";
-
             Log.d("REGISTRO", url);
-
+            banderalugarguardado = true;
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
             requestQueue.add(jsonObjectRequest);
         }else{
@@ -261,12 +368,45 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     public void onResponse(JSONObject response) {
         progressDialog.hide();
 
-        direccion_lugar = "";
-        latitud = 0;
-        longitud = 0;
-        codigo = "";
-        Intent intent = new Intent(getContext(), MapsActivity.class);
-        startActivity(intent);
+        if( banderalugarguardado ){
+            JSONArray jsonArray = response.optJSONArray("lugar");
+            try {
+                JSONObject jsonObject_rta = null;
+                jsonObject_rta = jsonArray.getJSONObject(0);
+                dato_id_lugar = jsonObject_rta.getInt("id");
+                if( dato_id_lugar != 0 ){
+                    banderalugarguardado = false;
+                    guardarImagenesFirabaseStorage();
+                }else{
+                    Toast.makeText(getContext(), "No se guardó el lugar y tampoco va a guardar los tipos ", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void guardarImagenesDB(String urlimagen) {
+        if( dato_id_lugar != 0 ){
+            Toast.makeText(getContext(), "Imagen url: " + urlimagen, Toast.LENGTH_SHORT).show();
+            Log.d("URL_I", urlimagen);
+
+            try {
+                String encode = java.util.Base64.getEncoder().encodeToString(urlimagen.getBytes("UTF-8"));
+                Log.d("Encode", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            String url = variablesGlobales.getUrl_DB() + "ws_registro_imagenes_lugar.php?id_lugar="+dato_id_lugar+"&ruta_imagen="+urlimagen+" ";
+            Log.d("REGISTRO", url);
+            banderalugarguardado = false;
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+            requestQueue.add(jsonObjectRequest);   
+        }else{
+            Toast.makeText(getContext(), "Ocurrió un error al intentar guardar la información", Toast.LENGTH_SHORT).show();
+        }
     }
 
 /*
@@ -317,24 +457,24 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
             builder.setTitle("Seleccionar una opción");
             builder.setItems(items, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    switch (item) {
-                        case 0:
-                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                            intent.setType("image/*");
-                            //startActivityForResult(intent, REQUEST_IMAGE, null);
-                            startActivityForResult(intent.createChooser(intent, "seleccione la aplicación"), CODIGO_sELECCIONA);
-                            break;
-                        case 1:
-                            tomarfoto();
-                            break;
-                        case 2:
-                            Toast.makeText(getContext(), "Buscando en la web", Toast.LENGTH_SHORT).show();
-                            break;
-                        case 3:
-                            Toast.makeText(getContext(), "Cancelado", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                            break;
-                    }
+                switch (item) {
+                    case 0:
+                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                        intent.setType("image/*");
+                        //startActivityForResult(intent, REQUEST_IMAGE, null);
+                        startActivityForResult(intent.createChooser(intent, "seleccione la aplicación"), CODIGO_sELECCIONA);
+                        break;
+                    case 1:
+                        tomarfoto();
+                        break;
+                    case 2:
+                        Toast.makeText(getContext(), "Buscando en la web", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(getContext(), "Cancelado", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                }
                 }
             });
             builder.show();
@@ -380,7 +520,6 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK) {
             //imagenes.setVisibility(View.VISIBLE);
             switch (requestCode) {
@@ -391,24 +530,21 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
                     Toast.makeText(getContext(), "imagen: " + mipath, Toast.LENGTH_SHORT).show();
                     uris.add(new Imagenes_Recycler_Uris(mipath));
                     cargarimagenreciclerimagenes_comida();
-                    break;
+                break;
                 case CODIGO_FOTO:
                     MediaScannerConnection.scanFile(getContext(), new String[]{path},
-                            null, new MediaScannerConnection.OnScanCompletedListener() {
-                                @Override
-                                public void onScanCompleted(String path, Uri uri) {
-                                    Log.i("RUTA DE ALMACENAMIENTO", "PATH: " + path);
-                                }
-                            });
+                        null, new MediaScannerConnection.OnScanCompletedListener() {
+                            @Override
+                            public void onScanCompleted(String path, Uri uri) {
+                                uris.add(new Imagenes_Recycler_Uris(uri));
+                            }
+                        });
                     Bitmap bitmap = BitmapFactory.decodeFile(path);
                     //imagenes.setImageBitmap(bitmap);
                     bitmaps.add(bitmap);
-                    //cargarimagenreciclerimagenes_comida();
-                    uris.add(new Imagenes_Recycler_Uris(Uri.parse(path)));
                     cargarimagenreciclerimagenes_comida();
-                    break;
+                break;
             }
-
         } else {
             //Toast.makeText(this, "algo no anda bien", Toast.LENGTH_SHORT).show();
         }
@@ -417,13 +553,11 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
 
     //Con este metodo cargamos las rutas de las imagenes que están en uri y las mostramos con la clase RecyclerViewImagenes_lugares_comida
     private void cargarimagenreciclerimagenes_comida() {
-
         if (uris.isEmpty()) {
             recylcerimagenes.setVisibility(View.GONE);
         } else {
             recylcerimagenes.setVisibility(View.VISIBLE);
         }
-
         List<Imagenes_Recycler_Uris> posicionamiento = new ArrayList<>();
         if (!uristotales.isEmpty()) {
             for (int i = 0; i < uristotales.size(); i++) {
@@ -434,7 +568,6 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
                 }
             }
         }
-
         Toast.makeText(getContext(), "Tamaño de uris: "+ uris.size(), Toast.LENGTH_SHORT).show();
         uristotales.clear();
         recylcerimagenes.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));

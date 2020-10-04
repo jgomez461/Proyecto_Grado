@@ -105,5 +105,6 @@
     <string name="tipos_deporte">Selection of types of sport*</string>
     <string name="escriba_aqui">Type here</string>
     <string name="nombre_tipo_deporte">Sport type name*</string>
+    <string name="tipo_lugar">Type of place</string>
 
 </resources>

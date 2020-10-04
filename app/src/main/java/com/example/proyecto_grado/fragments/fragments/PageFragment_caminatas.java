@@ -208,7 +208,7 @@ public class PageFragment_caminatas extends Fragment implements Response.Listene
                 if( codigo1 != null){
                     Toast.makeText(getContext(), "Entra cuando se la direccion", Toast.LENGTH_LONG).show();
                     agregarLugar( codigo1, id_sesion, direccion_marker.getText().toString(), nombre_lugar.getText().toString(),
-                            textodescripcion.getText().toString(), 6, latitud1, longitud1, codigo2, direccion_marker_2.getText().toString(), latitud1, longitud2);
+                            textodescripcion.getText().toString(), 6, latitud1, longitud1, codigo2, direccion_marker_2.getText().toString(), latitud2, longitud2);
                 }else {
                     Toast.makeText(getContext(), "Entra cuando no se la direccion", Toast.LENGTH_LONG).show();
                     LatLng latLng = variablesGlobales.buscarLatLng( direccion_marker.getText().toString(), getContext());

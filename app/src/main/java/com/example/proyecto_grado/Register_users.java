@@ -107,12 +107,11 @@ public class Register_users extends AppCompatActivity implements Response.Listen
             progressDialog.show();
 
             String variablesDB = variablesGlobales.getUrl_DB();
-            String url = variablesDB + "DB_proyecto_grado/ws_registro_user.php?nombre="+
+            String url = variablesDB + "ws_registro_user.php?nombre="+
                     nombre.getText().toString()+
                     "&usuario="+usuario.getText().toString()+
                     "&codigo_acceso="+codigo_acceso.getText().toString()
                     +"&clave="+clave.getText().toString()+" ";
-            url = url.replace(" ", "%20");
 
             Log.d("url", url);
 
@@ -138,7 +137,6 @@ public class Register_users extends AppCompatActivity implements Response.Listen
 
         Intent intent = new Intent(Register_users.this, MapsActivity.class);
         startActivity(intent);
-
     }
 
     private void guardarUsuario(JSONArray jsonArray) {

@@ -104,5 +104,6 @@
     <string name="tipos_deporte">Selección tipos de deporte*</string>
     <string name="escriba_aqui">Escriba aquí</string>
     <string name="nombre_tipo_deporte">Nombre tipo deporte*</string>
+    <string name="tipo_lugar">Tipo de lugar</string>
 
 </resources>

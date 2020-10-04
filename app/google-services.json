@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1085640839912",
+    "firebase_url": "https://proyectogradogallery.firebaseio.com",
+    "project_id": "proyectogradogallery",
+    "storage_bucket": "proyectogradogallery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085640839912:android:1c4580b78db2e2063c2f5d",
+        "android_client_info": {
+          "package_name": "com.example.proyecto_grado"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085640839912-s04e3i12v8mjaluls814eofau10t1u25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWxmxi8XB_vdXaTUkPqtjZ4E24gBGRj4U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085640839912-s04e3i12v8mjaluls814eofau10t1u25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

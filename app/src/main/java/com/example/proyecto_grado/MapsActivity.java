@@ -34,6 +34,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,6 +45,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.proyecto_grado.Homedialogos.HomedialogCaminatas;
 import com.example.proyecto_grado.Homedialogos.HomedialogCicloRutas;
+import com.example.proyecto_grado.entidades.TiposDeporteLugar;
 import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.example.proyecto_grado.Homedialogos.Homedialogo;
 import com.example.proyecto_grado.Homedialogos.HomedialogDeportivo;
@@ -53,6 +55,7 @@ import com.example.proyecto_grado.complementos.SliderPageAdapter_Comidas;
 import com.example.proyecto_grado.entidades.Lugar;
 import com.example.proyecto_grado.entidades.Usuario;
 import com.example.proyecto_grado.fragments.fragments.AdaptadorCategorias_principal;
+import com.example.proyecto_grado.fragments.fragments.InformacionMarker;
 import com.example.proyecto_grado.fragments.fragments.Informacion_marker;
 import com.example.proyecto_grado.fragments.fragments.Informacion_markers;
 import com.google.android.gms.maps.CameraUpdate;
@@ -74,6 +77,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -83,7 +87,7 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.proyecto_grado.R.drawable.estilo_borde_editext_satelite;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Response.Listener<JSONObject>, Response.ErrorListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Response.Listener<JSONObject>, Response.ErrorListener{
 
 
     AdaptadorCategorias_principal adaptador;
@@ -120,6 +124,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //variables para buscar direccion
     private LatLng miposicion;
 
+    //variables para mostrar las imagenes
+    private List<String> imagenes_marcadores = new ArrayList<>() ;
+    private List<String> imagenes_marcadores_seleccionados = new ArrayList<>();
+    private List<TiposDeporteLugar> tiposDeporteLugars = new ArrayList<>();
 
     private Bundle extra;
     private SupportMapFragment mapFragment;
@@ -127,6 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Address address;
     private String loongitud;
     private String laatitud;
+    private int codigo_rutas = 0;
 
     //variables para el click en  el mapa
     private boolean banderaclick = false;
@@ -153,8 +162,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     Lugar lugar = new Lugar();
     Informacion_markers informacion_markers;
-    ViewPager imagenesinformacion;
+    ViewPager2 imagenesinformacion;
     Informacion_marker adapter;
+    InformacionMarker informacionMarker;
+    ViewPager2 viewPager2;
     int posiscion_marcador = 0;
     String codigo_marcador = "";
 
@@ -185,7 +196,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerView = findViewById(R.id.filtrosrecycler);
         cambioidioma = (ImageButton) findViewById(R.id.cambioidioma);
         textocambiaidioma = (TextView) findViewById(R.id.textoidioma);
-        imagenesinformacion = (ViewPager) findViewById(R.id.informacion_markers);
+        imagenesinformacion = (ViewPager2) findViewById(R.id.informacion_markers);
+        //viewPager2 = (ViewPager2) findViewById(R.id.informacion_markers);
 
         deletemarker.setVisibility(View.INVISIBLE);
         //con este codigo nos devolvemos de recyclerview a Mapsactivity y traemos datos
@@ -452,7 +464,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 usermarkeroptions.title(direccion);
                                 usermarkeroptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
 
-                                lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, direccion, "N.A", "Ubicación por agregar", 0, 0, "N.A", useradres.getLatitude(), useradres.getLongitude(), "0", "0", 0 ,0));;
+                                tiposDeporteLugars.clear();
+                                lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, direccion, "N.A", "Ubicación por agregar", 0, 0, "N.A", useradres.getLatitude(), useradres.getLongitude(), "0", "0", 0 ,0, imagenes_marcadores, tiposDeporteLugars));;
                                 consultaLugaresUsuario();
                             }
 
@@ -484,39 +497,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMapToolbarEnabled(false);
         //mover los botones zoom del mapa
         googleMap.setPadding(-20, 5, 0, 125);
-
-        if (filtros) {
-            if (banderaotro) {
-                for (int i = 0; i < latLngsdeprueba.size(); i++) {
-                    getdirecciondetalleslongclick(latLngsdeprueba.get(i).latitude, latLngsdeprueba.get(i).longitude);
-                }
-            }
-            if (banderacomida) {
-                for (int i = 0; i < latLngsdepruebacomida.size(); i++) {
-                    getdirecciondetalleslongclick(latLngsdepruebacomida.get(i).latitude, latLngsdepruebacomida.get(i).longitude);
-                }
-            }
-            if (banderacaminata) {
-                for (int i = 0; i < latLngsdepruebacaminatas.size(); i++) {
-                    getdirecciondetalleslongclick(latLngsdepruebacaminatas.get(i).latitude, latLngsdepruebacaminatas.get(i).longitude);
-                }
-            }
-
-        } else {
-            for (int i = 0; i < latLngsdeprueba.size(); i++) {
-                getdirecciondetalleslongclick(latLngsdeprueba.get(i).latitude, latLngsdeprueba.get(i).longitude);
-            }
-
-            for (int i = 0; i < latLngsdepruebacomida.size(); i++) {
-                getdirecciondetalleslongclick(latLngsdepruebacomida.get(i).latitude, latLngsdepruebacomida.get(i).longitude);
-            }
-
-
-            for (int i = 0; i < latLngsdepruebacaminatas.size(); i++) {
-                getdirecciondetalleslongclick(latLngsdepruebacaminatas.get(i).latitude, latLngsdepruebacaminatas.get(i).longitude);
-            }
-
-        }
         //mostrar o no mostrar información
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -544,7 +524,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     ProgressDialog progressDialog;
     RequestQueue requestQueue;
+    RequestQueue requestQueue2;
     JsonObjectRequest jsonObjectRequest;
+    JsonObjectRequest jsonObjectRequest2;
 
     private void consultaLugaresUsuario() {
         SharedPreferences usario_datos = getSharedPreferences("Usuario_info", this.MODE_PRIVATE);
@@ -569,7 +551,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     String codigo_marcador_mostrar = "";
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onResponse(JSONObject response) {
         progressDialog.hide();
@@ -581,13 +562,83 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 JSONObject jsonObject = null;
                 jsonObject = jsonArray.getJSONObject(i);
 
+                imagenes_marcadores_seleccionados.clear();
+                //consulta para traer a información de las imagenes de los lugares
+                String variablesDB = variablesGlobales.getUrl_DB();
+                String url2 = variablesDB + "ws_consulta_imagenes_lugares.php?id_lugar=" + jsonObject.getInt("id") + "";
+                requestQueue2 = Volley.newRequestQueue(this);
+                Log.d("url", url2);
+                jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url2, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONArray jsonArray2 = response.optJSONArray("imagenes_lugar");
+                        Log.d("SIDATA", "si hay"+ jsonArray2);
+                        try {
+                            for (int j=0; j< jsonArray2.length(); j++){
+                                JSONObject jsonObject2 = null;
+                                jsonObject2 = jsonArray2.getJSONObject(j);
+                                imagenes_marcadores_seleccionados.add(jsonObject2.getString("ruta_imagen"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //imagenes_marcadores_seleccionados.clear();
+                    }
+                });
+                requestQueue.add(jsonObjectRequest);
+                //fin de imagenes de los lugares
+
+                tiposDeporteLugars.clear();
+                if( jsonObject.getInt("tipo_lugar_principal") == 2 ){
+                    final String codigo_lugar = jsonObject.getString("codigo");
+                    final int id_lugar = jsonObject.getInt("id");
+                    imagenes_marcadores_seleccionados.clear();
+                    String url3 = variablesDB + "ws_consulta_tipos_deporte_lugar.php?lugar=" + jsonObject.getInt("id") + " ";
+                    Log.d("url", url3);
+                    jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url3, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            JSONArray jsonArray3 = response.optJSONArray("tipo_deporte_lugar" );
+                            for (int j=0; j< jsonArray3.length(); j++){
+                                JSONObject jsonObject3 = null;
+                                try {
+                                    jsonObject3 = jsonArray3.getJSONObject(j);
+                                    tiposDeporteLugars.add( new TiposDeporteLugar( id_lugar, codigo_lugar,
+                                            jsonObject3.getInt("id_tipo_lugar"), jsonObject3.getString("nombre_tipo") ) );
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    });
+                    requestQueue2.add(jsonObjectRequest2);
+                }
+
                 lista_lugares_usuario.add(new Lugar(jsonObject.getInt("id"), jsonObject.getString("codigo"),
                         jsonObject.getInt("usuario"), jsonObject.getString("direccion"),
                         jsonObject.getString("nombre_lugar"), jsonObject.getString("descripcion_lugar"),
-                        jsonObject.getInt("tipo_lugar"), jsonObject.getInt("tipo_lugar"), jsonObject.getString("fecha_creacion"),
+                        jsonObject.getInt("tipo_lugar"), jsonObject.getInt("tipo_lugar_principal"), jsonObject.getString("fecha_creacion"),
                         Double.parseDouble(jsonObject.getString("latitud")), Double.parseDouble(jsonObject.getString("longitud")),
-                        jsonObject.getString("codigo_2"), jsonObject.getString("direccion_2"), Double.parseDouble(jsonObject.getString("latitud")),
-                        Double.parseDouble(jsonObject.getString("longitud"))));
+                        jsonObject.getString("codigo_2"), jsonObject.getString("direccion_2"), Double.parseDouble(jsonObject.getString("latitud_2")),
+                        Double.parseDouble(jsonObject.getString("longitud_2")), imagenes_marcadores_seleccionados, tiposDeporteLugars));
+
+                if( jsonObject.getInt("tipo_lugar_principal") == 3 || jsonObject.getInt("tipo_lugar_principal") == 4 ){
+                    lista_lugares_usuario.add( new Lugar( jsonObject.getInt("id"), jsonObject.getString("codigo"),
+                            jsonObject.getInt("usuario"), jsonObject.getString("direccion_2"),
+                            jsonObject.getString("nombre_lugar"), jsonObject.getString("descripcion_lugar"),
+                            jsonObject.getInt("tipo_lugar"), jsonObject.getInt("tipo_lugar_principal"), jsonObject.getString("fecha_creacion"),
+                            Double.parseDouble(jsonObject.getString("latitud_2")), Double.parseDouble(jsonObject.getString("longitud_2")),
+                            jsonObject.getString("codigo_2"), jsonObject.getString("direccion_2"), Double.parseDouble(jsonObject.getString("latitud_2")),
+                            Double.parseDouble(jsonObject.getString("longitud_2")), imagenes_marcadores_seleccionados, tiposDeporteLugars));
+                }
             }
             if( lugares_agregados.size() > 0 ){
                 lista_lugares_usuario.addAll(lugares_agregados);
@@ -611,12 +662,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
             });
-
+            /*
             //adapter = new Informacion_marker(lista_lugares_usuario, this);
             adapter = new Informacion_marker( lista_lugares_usuario, this, new Informacion_marker.Conocerposicion() {
                 @Override
                 public void posisicionDelMarcador(String codigo_marcador, int id, LatLng latLng, String direccion_lugar, int codigo_accion) {
-
                     if( codigo_accion == 1 ){
                         mostrarInformacion(lista_lugares_usuario, codigo_marcador);
                     }else if( codigo_accion == 2 ){
@@ -624,8 +674,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         agregarLugar(latLng, direccion_lugar, codigo_marcador);
                     }
                 }
-            });
+            });*/
+            imagenesinformacion.setAdapter( new InformacionMarker(lista_lugares_usuario, imagenesinformacion, this, new InformacionMarker.posicion() {
+                @Override
+                public void posicionMarcador(String posicion, int id, LatLng latLng, String direccion_lugar, int codigo_accion) {
+                    Log.d("CANTIDAD_POSICION", "Lugares: " +  lista_lugares_usuario.toString());
+                    if( codigo_accion == 1 ){
+                        mostrarInformacion(lista_lugares_usuario, codigo_marcador);
+                    }else if( codigo_accion == 2 ){
+                        Toast.makeText(MapsActivity.this, "si se agrega..." + codigo_marcador, Toast.LENGTH_SHORT).show();
+                        agregarLugar(latLng, direccion_lugar, codigo_marcador);
+                    }
+                }
+            }));
             cargarVistasMarcadores(posiscion_marcador);
+            Log.d("CANTIDAD", "Lugares: " +  lista_lugares_usuario.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -634,9 +697,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);*/
     }
 
+    private Collection<? extends TiposDeporteLugar> cargarTiposLugar(final int id, final String codigo_lugar) {
+        final List<TiposDeporteLugar> tipo_lugar = new ArrayList<>();
+
+        String variablesDB = variablesGlobales.getUrl_DB();
+        String url3 = variablesDB + "ws_consulta_tipos_deporte_lugar.php?lugar=" + id + " ";
+        Log.d("url", url3);
+        requestQueue2 = Volley.newRequestQueue(this);
+        jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url3, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                JSONArray jsonArray3 = response.optJSONArray("tipo_deporte_lugar" );
+                for (int j=0; j< jsonArray3.length(); j++){
+                    JSONObject jsonObject3 = null;
+                    try {
+                        jsonObject3 = jsonArray3.getJSONObject(j);
+                        tipo_lugar.add( new TiposDeporteLugar( id, codigo_lugar,
+                                jsonObject3.getInt("id_tipo_lugar"), jsonObject3.getString("nombre_tipo") ) );
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                tiposDeporteLugars.clear();
+            }
+        });
+        requestQueue2.add(jsonObjectRequest2);
+
+        return tipo_lugar;
+    }
+
+    private List<String> cargarImagenesLugar( int id ) {
+        List<String> imagenes_lugar = new ArrayList<>();
+        requestQueue2 = Volley.newRequestQueue(this);
+
+        //consulta para traer a información de las imagenes de los lugares
+        String variablesDB = variablesGlobales.getUrl_DB();
+        String url2 = variablesDB + "ws_consulta_imagenes_lugares.php?id_lugar=" + id + "";
+
+        Log.d("url", url2);
+        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url2, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                JSONArray jsonArray2 = response.optJSONArray("imagenes_lugar");
+                if( jsonArray2.length() > 0 ){
+                    Log.d("SIDATA", "si hay"+ jsonArray2);
+                    try {
+                        for (int j=0; j< jsonArray2.length(); j++){
+                            JSONObject jsonObject2 = null;
+                            jsonObject2 = jsonArray2.getJSONObject(j);
+                            imagenes_marcadores_seleccionados.add(jsonObject2.getString("ruta_imagen"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    Log.d("NODATA", "No hay imagenes");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //imagenes_marcadores_seleccionados.clear();
+            }
+        });
+        requestQueue.add(jsonObjectRequest);
+        //fin de imagenes de los lugares
+
+        return imagenes_lugar;
+    }
+
     private void cargarVistasMarcadores(int posiscion_marcador) {
         imagenesinformacion.setVisibility(View.VISIBLE);
-        imagenesinformacion.setAdapter(adapter);
+        //imagenesinformacion.setAdapter(adapter);
         imagenesinformacion.setPadding(5, 0, 5, 0);
         imagenesinformacion.setCurrentItem( posiscion_marcador );
     }
@@ -645,19 +781,106 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for( int i=0; i<lista_lugares_usuario.size(); i++ ){
             if( codigo == lista_lugares_usuario.get(i).getCodigo() || codigo_marcador_mostrar == lista_lugares_usuario.get(i).getCodigo() ){
                 LatLng latLng = new LatLng(lista_lugares_usuario.get(i).getLatitud(), lista_lugares_usuario.get(i).getLongitud());
-                final Marker marcador = mMap.addMarker(new MarkerOptions().position(latLng));
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
-                mMap.animateCamera(cameraUpdate);
+                if( lista_lugares_usuario.get(i).getTipo_lugar_principal() == 1 ){
+                    final Marker marcador = mMap.addMarker(new MarkerOptions().
+                            position(latLng).
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                    mMap.animateCamera(cameraUpdate);
+                }else if( lista_lugares_usuario.get(i).getTipo_lugar_principal() == 2 ){
+                    final Marker marcador = mMap.addMarker(new MarkerOptions().
+                            position(latLng).
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                    mMap.animateCamera(cameraUpdate);
+                }else if( lista_lugares_usuario.get(i).getTipo_lugar_principal() == 3 ){
+                    final Marker marcador = mMap.addMarker(new MarkerOptions().
+                            position(latLng).
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                    mMap.animateCamera(cameraUpdate);
+                }else if(lista_lugares_usuario.get(i).getTipo_lugar_principal() == 4 ){
+                    final Marker marcador = mMap.addMarker(new MarkerOptions().
+                            position(latLng).
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                    mMap.animateCamera(cameraUpdate);
+                }else{
+                    final Marker marcador = mMap.addMarker(new MarkerOptions().
+                            position(latLng).
+                            icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                    mMap.animateCamera(cameraUpdate);
+                }
             }
         }
     }
 
+    List<String> codigos_rutas = new ArrayList<>();
     private void pintarLugares(List<Lugar> lista_lugares_usuario) {
-        for (int i=0; i<lista_lugares_usuario.size(); i++ ){
+        for ( int i=0; i<lista_lugares_usuario.size(); i++ ){
             LatLng latLng = new LatLng(lista_lugares_usuario.get(i).getLatitud(), lista_lugares_usuario.get(i).getLongitud());
-            Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title("marker: " + lista_lugares_usuario.get(i).getDireccion()));
-            String id_marker = marker.getId();
-            mMarkers.put( id_marker , lista_lugares_usuario.get(i).getCodigo());
+            if( lista_lugares_usuario.get(i).getTipo_lugar_principal() == 1 ){
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).
+                        title("marker: " + lista_lugares_usuario.get(i).getDireccion()).
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                String id_marker = marker.getId();
+                mMarkers.put( id_marker , lista_lugares_usuario.get(i).getCodigo());
+            }else if( lista_lugares_usuario.get(i).getTipo_lugar_principal() == 2 ){
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).
+                        title("marker: " + lista_lugares_usuario.get(i).getDireccion()).
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                String id_marker = marker.getId();
+                mMarkers.put( id_marker , lista_lugares_usuario.get(i).getCodigo());
+            }else if( lista_lugares_usuario.get(i).getTipo_lugar_principal() == 3 ){
+                codigo_rutas = 1;
+                if( !codigos_rutas.isEmpty() ){
+                    for ( int j=0; j<codigos_rutas.size(); j++ ){
+                        if( codigos_rutas.get(j).equals(lista_lugares_usuario.get(j).getCodigo()) ){
+                            break;
+                        }else{
+                            LatLng latLng1 = new LatLng(lista_lugares_usuario.get(i).getLatitud(), lista_lugares_usuario.get(i).getLongitud());
+                            LatLng latLng2 = new LatLng(lista_lugares_usuario.get(i).getLatitud2(), lista_lugares_usuario.get(i).getLongitud2());
+                            codigos_rutas.add( lista_lugares_usuario.get(i).getCodigo() );
+                            cargarInformacionRuta( latLng1, latLng2 );
+                        }
+                    }
+                }else{
+                    LatLng latLng1 = new LatLng(lista_lugares_usuario.get(i).getLatitud(), lista_lugares_usuario.get(i).getLongitud());
+                    LatLng latLng2 = new LatLng(lista_lugares_usuario.get(i).getLatitud2(), lista_lugares_usuario.get(i).getLongitud2());
+                    codigos_rutas.add( lista_lugares_usuario.get(i).getCodigo() );
+                    cargarInformacionRuta( latLng1, latLng2 );
+                }
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).
+                        title("marker: " + lista_lugares_usuario.get(i).getDireccion()).
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                String id_marker = marker.getId();
+                mMarkers.put( id_marker , lista_lugares_usuario.get(i).getCodigo());
+            }else if( lista_lugares_usuario.get(i).getTipo_lugar_principal() == 4 ){
+                codigo_rutas = 2;
+                for ( int j=0; j<codigos_rutas.size(); j++ ){
+                    if( codigos_rutas.get(j).equals(lista_lugares_usuario.get(j).getCodigo()) ){
+                        break;
+                    }else{
+                        LatLng latLng1 = new LatLng(lista_lugares_usuario.get(i).getLatitud(), lista_lugares_usuario.get(i).getLongitud());
+                        LatLng latLng2 = new LatLng(lista_lugares_usuario.get(i).getLatitud2(), lista_lugares_usuario.get(i).getLongitud2());
+                        codigos_rutas.add( lista_lugares_usuario.get(j).getCodigo() );
+                        cargarInformacionRuta( latLng1, latLng2 );
+                    }
+                }
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).
+                        title("marker: " + lista_lugares_usuario.get(i).getDireccion()).
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                String id_marker = marker.getId();
+                mMarkers.put( id_marker , lista_lugares_usuario.get(i).getCodigo());
+            }else{
+                Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).
+                        title("marker: " + lista_lugares_usuario.get(i).getDireccion()).
+                        icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                String id_marker = marker.getId();
+                mMarkers.put( id_marker , lista_lugares_usuario.get(i).getCodigo());
+            }
+
         }
     }
 
@@ -732,9 +955,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         "Trazar ruta",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
+                                                Log.d("Latng1", latLng1.toString() );
+                                                Log.d("Latng2", latLng2.toString() );
                                                 homedialog_cam = new HomedialogCaminatas(latLng1.latitude, latLng1.longitude, direccion_1, latLng2.latitude, latLng2.longitude, direccion_2, 0, codigo_1, codigo_2);
                                                 homedialog_cam.show(getSupportFragmentManager(), "boton caminatas");
-                                                //cargarInformacionRuta();
+                                                codigo_rutas = 0;
+                                                cargarInformacionRuta( latLng1, latLng2 );
                                                 dialog.cancel();
                                             }
                                         });
@@ -802,7 +1028,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             public void onClick(DialogInterface dialog, int id) {
                                                 homedialog_ciclo = new HomedialogCicloRutas(latLng1.latitude, latLng1.longitude, direccion_1, latLng2.latitude, latLng2.longitude, direccion_2, 0, codigo_1, codigo_2);
                                                 homedialog_ciclo.show(getSupportFragmentManager(), "boton ciclorutas");
-                                                //cargarInformacionRuta();
+                                                codigo_rutas = 0;
+                                                cargarInformacionRuta( latLng1, latLng2 );
                                                 dialog.cancel();
                                             }
                                         });
@@ -844,8 +1071,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void cargarInformacionRuta() {
-        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+latLng1.latitude+","+latLng1.longitude+"&destination="+latLng2.latitude+","+latLng2.longitude+"";
+    private void cargarInformacionRuta( LatLng latLng1, LatLng latLng2 ) {
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin="+latLng1.latitude+","+latLng1.longitude+"&destination="+latLng2.latitude+","+latLng2.longitude+"&key=AIzaSyDq4c_ubweF2Oilne6EDr5wsQpHGZ1mI0k";
         Log.d("DATO", url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -880,16 +1107,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 jLegs = ((JSONObject)(jRoutes.get(i))).getJSONArray("legs");
 
                 for (int j=0; j<jLegs.length();j++){
-
                     jSteps = ((JSONObject)jLegs.get(j)).getJSONArray("steps");
-
                     for (int k = 0; k<jSteps.length();k++){
-
-
                         String polyline = ""+((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
                         Log.i("end",""+polyline);
                         List<LatLng> list = PolyUtil.decode(polyline);
-                        mMap.addPolyline(new PolylineOptions().addAll(list).color(Color.GRAY).width(5));
+                        if( codigo_rutas == 1 ){
+                            mMap.addPolyline(new PolylineOptions().addAll(list).color(Color.rgb(244, 132, 3)).width(10));
+                        }else if( codigo_rutas == 2 ){
+                            mMap.addPolyline(new PolylineOptions().addAll(list).color(Color.rgb(3, 106, 37)).width(10));
+                        }else{
+                            mMap.addPolyline(new PolylineOptions().addAll(list).color(Color.rgb(244, 132, 3)).width(10));
+                        }
                     }
                 }
             }
@@ -989,7 +1218,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
     public void mostrarmiubicacion() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -1082,7 +1310,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         usermarkeroptions.snippet(city + " - " + country + " - " + state);
         usermarkeroptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ubicacion));
 
-        lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, addres, "N.A", "Ubicación por geolocalización", 0, 0, "N.A", latitud, longitud, "0", "0", 0 ,0));
+        tiposDeporteLugars.clear();
+        lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, addres, "N.A", "Ubicación por geolocalización", 0, 0, "N.A", latitud, longitud, "0", "0", 0 ,0, imagenes_marcadores, tiposDeporteLugars));
     }
 
     //prueba para agregar marcadores en un click largo
@@ -1129,7 +1358,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         /*mMap.addMarker(new MarkerOptions().position(miposicion).title(addres)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marcadordeposicion)).anchor(0.0f, 1.0f));*/
 
-        lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, addres, "N.A", "Lugares", 0, 0, "N.A", latitud, longitud, "0", "0", 0 ,0));
+        lugares_agregados.add(new Lugar(0, variablesGlobales.generate_code_random(10), 0, addres, "N.A", "Lugares", 0, 0, "N.A", latitud, longitud, "0", "0", 0 ,0, imagenes_marcadores, tiposDeporteLugars));
 /*
         final Marker marcador = mMap.addMarker(new MarkerOptions().position(miposicion).title(addres).
                 snippet(postalcode).
