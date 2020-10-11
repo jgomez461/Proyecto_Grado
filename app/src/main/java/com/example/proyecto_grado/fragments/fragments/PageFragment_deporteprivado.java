@@ -48,6 +48,12 @@ import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
 import com.example.proyecto_grado.entidades.TipoDeporte;
 import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -118,6 +124,11 @@ public class PageFragment_deporteprivado extends Fragment implements Response.Li
 
     List<Integer> lista_tipo_deporte_guardar = new ArrayList();
 
+    private StorageReference storageReference;
+
+    private boolean banderalugarguardado = false;
+    private int dato_id_lugar_imagenes =  0;
+
     public PageFragment_deporteprivado(double latitud, double longitud, String direccion_lugar, String codigo) {
         this.latitud = latitud;
         this.longitud = longitud;
@@ -148,11 +159,13 @@ public class PageFragment_deporteprivado extends Fragment implements Response.Li
             direccion_marker.setText(direccion_lugar);
         }
 
+        storageReference = FirebaseStorage.getInstance().getReference();
+
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_privado_1, R.string.titulo_dpr_1, R.string.informacion_dpr_01));
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_privado_2, R.string.titulo_dpr_2, R.string.informacion_dpr_02));
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_privado_3, R.string.titulo_dpr_3, R.string.informacion_dpr_03));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_privado_03, R.string.titulo_dpr_1, R.string.informacion_dpr_01));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_privado_01, R.string.titulo_dpr_2, R.string.informacion_dpr_02));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_deporte_privado_02, R.string.titulo_dpr_3, R.string.informacion_dpr_03));
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
@@ -301,12 +314,15 @@ public class PageFragment_deporteprivado extends Fragment implements Response.Li
             progressDialog.setMessage(R.string.intento_guardar_lugar+"");
             progressDialog.show();
 
+            String direccionencode = variablesGlobales.encodeurl(direccion);
+
             bandera = true;
             bandera_guardado = true;
             String url = variablesGlobales.getUrl_DB() + "ws_registro_lugar.php?codigo="+
                     codigo+"&usuario="+
-                    usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
+                    usuario +"&direccion="+direccionencode+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
                     +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+2+"&latitud="+latitud+"&longitud="+longitud+"&codigo2=0&direccion2=0&latitud2=0&longitud2=0";
+            banderalugarguardado = true;
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
             requestQueue.add(jsonObjectRequest);
         }else{
@@ -351,6 +367,7 @@ public class PageFragment_deporteprivado extends Fragment implements Response.Li
                     dato_id_lugar = jsonObject_rta.getInt("id");
                     if( dato_id_lugar != 0 ){
                         bandera_guardado = false;
+                        guardarImagenesFirabaseStorage();
                         guardarTiposDeporte( dato_id_lugar );
                     }else{
                         Toast.makeText(getContext(), "No se guardó el lugar y tampoco va a guardar los tipos ", Toast.LENGTH_SHORT).show();
@@ -367,6 +384,7 @@ public class PageFragment_deporteprivado extends Fragment implements Response.Li
                     TipoDeporte tipoDeporte = new TipoDeporte();
                     JSONObject jsonObject = null;
                     jsonObject = jsonArray.getJSONObject(i);
+
                     lista_tipos_deporte_publico.add( new TipoDeporte(jsonObject.getInt("id"), jsonObject.getInt("id_tipo_lugar"), jsonObject.getString("nombre")));
                 }
             } catch (JSONException e) {
@@ -375,6 +393,116 @@ public class PageFragment_deporteprivado extends Fragment implements Response.Li
             mostrarInformacionTiposDeporte();
         }
     }
+
+    private String photoLink = "";
+    private Uri uri_ulr = null;
+    private List<Uri> saveurisFirebaseStorage = new ArrayList<>();
+    private List<Bitmap> savebotmapsbaseStorage = new ArrayList<>();
+    ArrayList<String> urlimagenes = new ArrayList<>();
+    private StorageReference filepath;
+    private boolean imagenesguardadas = false;
+    ArrayList<Uri> urlimagenes_uri = new ArrayList<>();
+    private String codigo_generado;
+    private void guardarImagenesFirabaseStorage() {
+        if( uris.size() > 0 && saveurisFirebaseStorage.size() == 0 ){
+            for (int i=0; i < uris.size(); i++){
+                saveurisFirebaseStorage.add(uris.get(i).getImagenuri());
+            }
+        }
+        if( saveurisFirebaseStorage.size() > 0 && urlimagenes.size() == 0 ){
+            for (int i=0; i< saveurisFirebaseStorage.size(); i++){
+                if( codigo != null ){
+                    filepath = storageReference.child(codigo).child(saveurisFirebaseStorage.get(i).getLastPathSegment());
+                    filepath.putFile(saveurisFirebaseStorage.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            imagenesguardadas = true;
+                            Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    photoLink = uri.toString();
+                                    uri_ulr = uri;
+                                    guardarImagenesDB( photoLink );
+                                    Log.d("URK", photoLink);
+                                    Log.d("URIII", uri.toString());
+                                    imagenesguardadas = true;
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            imagenesguardadas = false;
+                        }
+                    });
+                }else{
+                    filepath = storageReference.child(codigo_generado).child(saveurisFirebaseStorage.get(i).getLastPathSegment());
+                    filepath.putFile(saveurisFirebaseStorage.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            imagenesguardadas = true;
+                            Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    photoLink = uri.toString();
+                                    uri_ulr = uri;
+                                    urlimagenes_uri.add(uri);
+                                    guardarImagenesDB( photoLink );
+                                    Log.d("URK", photoLink);
+                                    Log.d("URIII", uri.toString());
+                                    imagenesguardadas = true;
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Falló", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            imagenesguardadas = false;
+                        }
+                    });
+                }
+            }
+        }else{
+            imagenesguardadas = true;
+        }
+        Toast.makeText(getContext(), "BUENA", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), MapsActivity.class);
+        getContext().startActivity(intent);
+        /*
+        if( urlimagenes.size() > 0 && urlimagenes.size() == saveurisFirebaseStorage.size()){
+            validacionInformacion();
+        }else{
+            Toast.makeText(getContext(), "Algunos imagenes no fueron subidas correctamente", Toast.LENGTH_SHORT).show();
+        }*/
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void guardarImagenesDB(String urlimagen) {
+        if( dato_id_lugar != 0 ){
+            Log.d("URL_I", urlimagen);
+
+            String rutaImagenEncode = variablesGlobales.encodeurl(urlimagen);
+            Log.d("URL_IENCODE", rutaImagenEncode);
+
+            String url = variablesGlobales.getUrl_DB() + "ws_registro_imagenes_lugar.php?id_lugar="+dato_id_lugar+"&ruta_imagen="+rutaImagenEncode+" ";
+            Log.d("REGISTRO", url);
+            banderalugarguardado = false;
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+            requestQueue.add(jsonObjectRequest);
+        }else{
+            Toast.makeText(getContext(), "Ocurrió un error al intentar guardar la información", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void guardarTiposDeporteNombre(int dato_id_tipo_deporte) {
         String url = variablesGlobales.getUrl_DB() + "ws_registro_tipos_deporte_lugar.php?id_lugar="+ dato_id_lugar +"&id_tipo_deporte="+ dato_id_tipo_deporte +" ";

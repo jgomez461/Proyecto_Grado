@@ -16,7 +16,7 @@ public class VariablesGlobales {
 
     //clave de google maps -> jgomezp97
     //AIzaSyBZfPecjBnm2jS-pZ5DpJVJOAFcm08nkSE
-    public String url_DB = "https://a6a95a54801d.ngrok.io/DB_proyecto_grado/";
+    public String url_DB = "https://f59ec29c9710.ngrok.io/DB_proyecto_grado/";
     char [] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'W', 'x', 'y', 'z' };
 
     public VariablesGlobales(String url_DB) {
@@ -83,6 +83,22 @@ public class VariablesGlobales {
             number += letters[(int)(Math.random()*26)];
         }
         return number;
+    }
+
+    public String encodeurl( String variable ){
+        String url = "";
+        for( int i=0; i< variable.length(); i++ ){
+            if( variable.charAt(i) == '#' ){
+                url += "::::";
+            }else if( variable.charAt(i) == '%' ){
+                url += "----";
+            }else if( variable.charAt(i) == '&' ){
+                url += ";;;;";
+            }else{
+                url += variable.charAt(i);
+            }
+        }
+        return url;
     }
 
     public static class Model_iformacion_lugares {

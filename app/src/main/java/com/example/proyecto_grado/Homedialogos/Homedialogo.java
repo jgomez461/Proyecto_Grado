@@ -45,16 +45,16 @@ public class Homedialogo extends BottomSheetDialogFragment{
 
     private void getImages(){
 
-        mimageurl.add(R.drawable.filtocomidas);
+        mimageurl.add(R.drawable.food_filter);
         mnames.add(R.string.filtocomida);
 
-        mimageurl.add(R.drawable.filtoejercicio);
+        mimageurl.add(R.drawable.exercise_filter);
         mnames.add(R.string.filtoejercicio);
 
-        mimageurl.add(R.drawable.filtocaminatas);
+        mimageurl.add(R.drawable.hikes_filter);
         mnames.add(R.string.filtocaminata);
 
-        mimageurl.add(R.drawable.filtociclorutas);
+        mimageurl.add(R.drawable.bikepaths_filter);
         mnames.add(R.string.filtociclorutas);
     }
 

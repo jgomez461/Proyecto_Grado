@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,7 +44,15 @@ import com.example.proyecto_grado.R;
 import com.example.proyecto_grado.complementos.Imagenes_Recycler_Uris;
 import com.example.proyecto_grado.entidades.VariablesGlobales;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -104,6 +113,12 @@ public class PageFragment_ciclorutas extends Fragment implements Response.Listen
     RequestQueue requestQueue;
     JsonObjectRequest jsonObjectRequest;
 
+    private StorageReference storageReference;
+
+    private boolean banderalugarguardado = false;
+    private int dato_id_lugar =  0;
+    private String codigo;
+
 
     public PageFragment_ciclorutas(double latitud1, double longitud1, String direccion_lugar1, String codigo1, double latitud2, double longitud2, String direccion_lugar2, String codigo2) {
         this.latitud1 = latitud1;
@@ -133,6 +148,8 @@ public class PageFragment_ciclorutas extends Fragment implements Response.Listen
         btn_buscar_direccion_2 = viewGroup.findViewById(R.id.btn_buscar_direccion_2);
         agregar_lugar = viewGroup.findViewById(R.id.add_location);
 
+        storageReference = FirebaseStorage.getInstance().getReference();
+
         if( direccion_lugar1 != null ){
             direccion_marker.setText(direccion_lugar1);
         }
@@ -142,8 +159,8 @@ public class PageFragment_ciclorutas extends Fragment implements Response.Listen
 
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_ciclorutas_1, R.string.titulo_cic_1, R.string.informacion_cic_01));
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_ciclorutas_2, R.string.titulo_cic_2, R.string.informacion_cic_02));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_ciclorutas_01, R.string.titulo_cic_1, R.string.informacion_cic_01));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_ciclorutas_02, R.string.titulo_cic_2, R.string.informacion_cic_02));
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
@@ -288,13 +305,16 @@ public class PageFragment_ciclorutas extends Fragment implements Response.Listen
             progressDialog.setMessage(R.string.intento_guardar_lugar+"");
             progressDialog.show();
 
+            String direccionencode = variablesGlobales.encodeurl(direccion);
+            String direccion2encode = variablesGlobales.encodeurl(direccion2);
+
             String url = variablesGlobales.getUrl_DB() + "ws_registro_lugar.php?codigo="+
                     codigo+"&usuario="+
-                    usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="+descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+4+"&latitud="+latitud+"&longitud="+longitud+"&codigo2="+codigo2+"&direccion2="+direccion2+"&latitud2="+
+                    usuario +"&direccion="+direccionencode+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="+descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+4+"&latitud="+latitud+"&longitud="+longitud+"&codigo2="+codigo2+"&direccion2="+direccion2encode+"&latitud2="+
                     latitud2+"&longitud2="+longitud2+"";
 
             Log.d("REGISTRO", url);
-
+            banderalugarguardado = true;
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
             requestQueue.add(jsonObjectRequest);
         }else{
@@ -312,8 +332,131 @@ public class PageFragment_ciclorutas extends Fragment implements Response.Listen
     @Override
     public void onResponse(JSONObject response) {
         progressDialog.hide();
+        if( banderalugarguardado ){
+            JSONArray jsonArray = response.optJSONArray("lugar");
+            try {
+                JSONObject jsonObject_rta = null;
+                jsonObject_rta = jsonArray.getJSONObject(0);
+                dato_id_lugar = jsonObject_rta.getInt("id");
+                if( dato_id_lugar != 0 ){
+                    banderalugarguardado = false;
+                    guardarImagenesFirabaseStorage();
+                }else{
+                    Toast.makeText(getContext(), "No se guardó el lugar y tampoco va a guardar los tipos ", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String photoLink = "";
+    private Uri uri_ulr = null;
+    private List<Uri> saveurisFirebaseStorage = new ArrayList<>();
+    private List<Bitmap> savebotmapsbaseStorage = new ArrayList<>();
+    ArrayList<String> urlimagenes = new ArrayList<>();
+    private StorageReference filepath;
+    private boolean imagenesguardadas = false;
+    ArrayList<Uri> urlimagenes_uri = new ArrayList<>();
+    private String codigo_generado;
+    private void guardarImagenesFirabaseStorage() {
+        if( uris.size() > 0 && saveurisFirebaseStorage.size() == 0 ){
+            for (int i=0; i < uris.size(); i++){
+                saveurisFirebaseStorage.add(uris.get(i).getImagenuri());
+            }
+        }
+        if( saveurisFirebaseStorage.size() > 0 && urlimagenes.size() == 0 ){
+            for (int i=0; i< saveurisFirebaseStorage.size(); i++){
+                if( codigo1 != null ){
+                    filepath = storageReference.child(codigo1).child(saveurisFirebaseStorage.get(i).getLastPathSegment());
+                    filepath.putFile(saveurisFirebaseStorage.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            imagenesguardadas = true;
+                            Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    photoLink = uri.toString();
+                                    uri_ulr = uri;
+                                    guardarImagenesDB( photoLink );
+                                    Log.d("URK", photoLink);
+                                    Log.d("URIII", uri.toString());
+                                    imagenesguardadas = true;
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            imagenesguardadas = false;
+                        }
+                    });
+                }else{
+                    filepath = storageReference.child(codigo_generado).child(saveurisFirebaseStorage.get(i).getLastPathSegment());
+                    filepath.putFile(saveurisFirebaseStorage.get(i)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            imagenesguardadas = true;
+                            Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    photoLink = uri.toString();
+                                    uri_ulr = uri;
+                                    urlimagenes_uri.add(uri);
+                                    guardarImagenesDB( photoLink );
+                                    Log.d("URK", photoLink);
+                                    Log.d("URIII", uri.toString());
+                                    imagenesguardadas = true;
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getContext(), "Falló", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            imagenesguardadas = false;
+                        }
+                    });
+                }
+            }
+        }else{
+            imagenesguardadas = true;
+        }
+        Toast.makeText(getContext(), "BUENA", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(), MapsActivity.class);
-        startActivity(intent);
+        getContext().startActivity(intent);
+        /*
+        if( urlimagenes.size() > 0 && urlimagenes.size() == saveurisFirebaseStorage.size()){
+            validacionInformacion();
+        }else{
+            Toast.makeText(getContext(), "Algunos imagenes no fueron subidas correctamente", Toast.LENGTH_SHORT).show();
+        }*/
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void guardarImagenesDB(String urlimagen) {
+        if( dato_id_lugar != 0 ){
+            Log.d("URL_I", urlimagen);
+
+            String rutaImagenEncode = variablesGlobales.encodeurl(urlimagen);
+            Log.d("URL_IENCODE", rutaImagenEncode);
+
+            String url = variablesGlobales.getUrl_DB() + "ws_registro_imagenes_lugar.php?id_lugar="+dato_id_lugar+"&ruta_imagen="+rutaImagenEncode+" ";
+            Log.d("REGISTRO", url);
+            banderalugarguardado = false;
+            jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+            requestQueue.add(jsonObjectRequest);
+        }else{
+            Toast.makeText(getContext(), "Ocurrió un error al intentar guardar la información", Toast.LENGTH_SHORT).show();
+        }
     }
 
 /*

@@ -38,6 +38,7 @@ public class Register_users extends AppCompatActivity implements Response.Listen
     private EditText clave;
     private Button registro;
     private ImageButton random;
+    private ImageButton keyy;
     private TextView ingreso;
     ProgressDialog progressDialog;
     RequestQueue requestQueue;
@@ -54,6 +55,7 @@ public class Register_users extends AppCompatActivity implements Response.Listen
         clave = (EditText) findViewById(R.id.clave_r);
         registro = (Button) findViewById(R.id.registro_usuario) ;
         random = (ImageButton) findViewById(R.id.code_random) ;
+        keyy = (ImageButton) findViewById(R.id.key) ;
         ingreso = (TextView) findViewById(R.id.ingreso) ;
         ingreso.setPaintFlags(registro.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         requestQueue = Volley.newRequestQueue( this);
@@ -65,6 +67,25 @@ public class Register_users extends AppCompatActivity implements Response.Listen
                 startActivity(intent);
             }
         });
+
+
+        //minetras tanto trabajamos con esta
+        keyy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //145 Texto sin Ocultar
+                //129 Texto Oculto
+                int n = clave.getInputType();
+                if (n == 129) {
+                    clave.setInputType(145);
+                    keyy.setImageResource(R.drawable.key_visibility_on);
+                } else {
+                    clave.setInputType(129);
+                    keyy.setImageResource(R.drawable.key_visibility_off);
+                }
+            }
+        });
+        //fin
 
         registro.setOnClickListener(new View.OnClickListener() {
             @Override

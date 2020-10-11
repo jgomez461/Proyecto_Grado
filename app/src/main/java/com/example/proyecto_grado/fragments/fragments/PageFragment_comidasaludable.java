@@ -149,9 +149,9 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
 
         //En este espacion agregamos las imagenes que van como información para el item de comida saludable
         model_iformacion_lugares = new ArrayList<>();
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_1, R.string.titulo_1, R.string.informacion_imges_comida_01));
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_2, R.string.titulo_2, R.string.informacion_imges_comida_02));
-        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_3, R.string.titulo_3, R.string.informacion_imges_comida_03));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descriocion_comida_saludable_01, R.string.titulo_1, R.string.informacion_imges_comida_01));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_02, R.string.titulo_2, R.string.informacion_imges_comida_02));
+        model_iformacion_lugares.add(new VariablesGlobales.Model_iformacion_lugares(R.drawable.descripcion_comida_saludable_03, R.string.titulo_3, R.string.informacion_imges_comida_03));
 
         adapter = new Adaptador_informacion_lugares(model_iformacion_lugares, viewGroup.getContext());
 
@@ -344,9 +344,12 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
             progressDialog.setMessage(R.string.intento_guardar_lugar+"");
             progressDialog.show();
 
+            String direccionencode = variablesGlobales.encodeurl(direccion);
+            Log.d("ENCODE", direccionencode);
+
             String url = variablesGlobales.getUrl_DB() + "ws_registro_lugar.php?codigo="+
                     codigo+"&usuario="+
-                    usuario +"&direccion="+direccion+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
+                    usuario +"&direccion="+direccionencode+"&nombre_lugar="+nombre_lugar+"&descripcion_lugar="
                     +descripcion_lugar+"&tipo_lugar="+tipo_lugar+"&tipo_lugar_principal="+1+"&latitud="+latitud+"&longitud="+longitud+"&codigo2=0&direccion2=0&latitud2=0&longitud2=0";
             Log.d("REGISTRO", url);
             banderalugarguardado = true;
@@ -389,17 +392,12 @@ public class PageFragment_comidasaludable extends Fragment implements Response.L
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void guardarImagenesDB(String urlimagen) {
         if( dato_id_lugar != 0 ){
-            Toast.makeText(getContext(), "Imagen url: " + urlimagen, Toast.LENGTH_SHORT).show();
             Log.d("URL_I", urlimagen);
 
-            try {
-                String encode = java.util.Base64.getEncoder().encodeToString(urlimagen.getBytes("UTF-8"));
-                Log.d("Encode", encode);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            String rutaImagenEncode = variablesGlobales.encodeurl(urlimagen);
+            Log.d("URL_IENCODE", rutaImagenEncode);
 
-            String url = variablesGlobales.getUrl_DB() + "ws_registro_imagenes_lugar.php?id_lugar="+dato_id_lugar+"&ruta_imagen="+urlimagen+" ";
+            String url = variablesGlobales.getUrl_DB() + "ws_registro_imagenes_lugar.php?id_lugar="+dato_id_lugar+"&ruta_imagen="+rutaImagenEncode+" ";
             Log.d("REGISTRO", url);
             banderalugarguardado = false;
             jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);

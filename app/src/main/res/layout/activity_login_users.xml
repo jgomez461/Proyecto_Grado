@@ -5,14 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorgrisclarologin"
+    android:background="@color/coloWgite"
     tools:context=".Login_users">
 
     <RelativeLayout
         android:id="@+id/linear"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/color_login">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/relative"
@@ -20,24 +19,11 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="130dp"
-                android:src="@drawable/logo" />
-
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:src="@drawable/login" />
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/relative"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:text="@string/acceder"
-            android:textColor="@color/coloWgite"
-            android:textSize="35dp" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -52,7 +38,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/bordelinearlayout"
             android:orientation="vertical">
@@ -144,7 +130,7 @@
                     android:layout_marginLeft="-40dp"
                     android:layout_toEndOf="@+id/codigo"
                     android:layout_toRightOf="@+id/codigo"
-                    android:src="@drawable/password" />
+                    android:src="@drawable/key_visibility_off" />
 
             </LinearLayout>
 
