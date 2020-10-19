@@ -57,7 +57,7 @@
                     android:textSize="25dp"
                     android:textStyle="bold"
                     android:textColor="@color/colornaranjaosucro"
-                    android:text="@string/ingreso" />
+                    android:text="ambiente obesogenico" />
 
                 <TextView
                     android:layout_width="wrap_content"

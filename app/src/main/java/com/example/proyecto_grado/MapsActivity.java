@@ -725,7 +725,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final Marker marcador = mMap.addMarker(new MarkerOptions().
                     position(latLng).
                     icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 20);
             mMap.animateCamera(cameraUpdate);
         }
 
@@ -735,7 +735,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 final Marker marcador = mMap.addMarker(new MarkerOptions().
                         position(latLng).
                         icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 20);
                 mMap.animateCamera(cameraUpdate);
             }
         }
