@@ -16,7 +16,7 @@ public class VariablesGlobales {
 
     //clave de google maps -> jgomezp97
     //AIzaSyBZfPecjBnm2jS-pZ5DpJVJOAFcm08nkSE
-    public String url_DB = "https://85357f559786.ngrok.io/DB_proyecto_grado/";
+    public String url_DB = "https://4ce232cc6411.ngrok.io/DB_proyecto_grado/";
     char [] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'W', 'x', 'y', 'z' };
 
     public VariablesGlobales(String url_DB) {
